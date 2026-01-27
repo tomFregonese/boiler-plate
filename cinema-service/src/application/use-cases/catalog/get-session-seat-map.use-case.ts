@@ -1,0 +1,69 @@
+import { Injectable } from '@nestjs/common';
+import { ISessionRepository } from '../../../domain/repositories/session.repository';
+import { ISeatRepository } from '../../../domain/repositories/seat.repository';
+import { IFilmService } from '../../ports/film-service.port';
+import { SessionNotFoundException } from '../../../domain/exceptions/session-not-found.exception';
+
+export interface SessionSeatMapResult {
+    sessionId: string;
+    filmTitle: string;
+    rows: Array<{
+        rowName: string;
+        seats: Array<{
+            seatId: string;
+            columnNumber: number;
+            status: 'FREE' | 'OCCUPIED';
+        }>;
+    }>;
+}
+
+@Injectable()
+export class GetSessionSeatMapUseCase {
+    constructor(
+        private readonly sessionRepository: ISessionRepository,
+        private readonly seatRepository: ISeatRepository,
+        private readonly filmService: IFilmService,
+    ) {}
+
+    async execute(sessionId: string): Promise<SessionSeatMapResult> {
+        const session = await this.sessionRepository.findById(sessionId);
+        if (!session) {
+            throw new SessionNotFoundException(sessionId);
+        }
+
+        const seats = await this.seatRepository.findByRoomId(session.roomId);
+        const filmTitle = await this.filmService.getFilmTitle(session.filmId);
+
+        const rowsMap = new Map<string, typeof seats>();
+
+        for (const seat of seats) {
+            const existing = rowsMap.get(seat.row) || [];
+            rowsMap.set(seat.row, [...existing, seat]);
+        }
+
+        const rows = Array.from(rowsMap.entries()).map(
+            ([rowName, rowSeats]) => ({
+                rowName,
+                seats: rowSeats.map((seat) => {
+                    const occupation = session.seatOccupations.find(
+                        (o) => o.seatId === seat.id,
+                    );
+                    const status: 'FREE' | 'OCCUPIED' =
+                        occupation?.isFree() !== false ? 'FREE' : 'OCCUPIED';
+
+                    return {
+                        seatId: seat.id,
+                        columnNumber: seat.number,
+                        status,
+                    };
+                }),
+            }),
+        );
+
+        return {
+            sessionId: session.id,
+            filmTitle,
+            rows,
+        };
+    }
+}

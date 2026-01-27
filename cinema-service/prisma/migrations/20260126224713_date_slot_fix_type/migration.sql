@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "sessions" ALTER COLUMN "startTime" SET DATA TYPE TIMESTAMP;
