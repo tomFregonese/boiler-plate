@@ -1,7 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { ICinemaRepository } from '../../../domain/repositories/cinema.repository';
 import { IFilmService } from '../../ports/film-service.port';
+import {
+    CINEMA_REPOSITORY,
+    FILM_SERVICE,
+    SESSION_REPOSITORY,
+} from '../../../infrastructure/token';
 
 export interface MovieSessionsResult {
     filmId: string;
@@ -19,8 +24,11 @@ export interface MovieSessionsResult {
 @Injectable()
 export class GetMovieSessionsUseCase {
     constructor(
+        @Inject(SESSION_REPOSITORY)
         private readonly sessionRepository: ISessionRepository,
+        @Inject(CINEMA_REPOSITORY)
         private readonly cinemaRepository: ICinemaRepository,
+        @Inject(FILM_SERVICE)
         private readonly filmService: IFilmService,
     ) {}
 

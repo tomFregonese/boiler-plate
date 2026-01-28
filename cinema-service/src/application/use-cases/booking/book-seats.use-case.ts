@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { SessionNotFoundException } from '../../../domain/exceptions/session-not-found.exception';
 import { SeatsAlreadyOccupiedException } from '../../../domain/exceptions/seats-already-occupied.exception';
+import { SESSION_REPOSITORY } from '../../../infrastructure/token';
 
 @Injectable()
 export class BookSeatsUseCase {
-    constructor(private readonly sessionRepository: ISessionRepository) {}
+    constructor(
+        @Inject(SESSION_REPOSITORY)
+        private readonly sessionRepository: ISessionRepository,
+    ) {}
 
     async execute(
         sessionId: string,

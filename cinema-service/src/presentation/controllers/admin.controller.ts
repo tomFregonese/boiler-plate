@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Param, Body, Query } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Param,
+    Body,
+    Query,
+    Headers as HeadersDecorator,
+} from '@nestjs/common';
 import {
     ApiTags,
     ApiOperation,
@@ -9,10 +17,17 @@ import {
 } from '@nestjs/swagger';
 import { RoomAvailabilityDto } from '../dtos/admin/room-availability.dto';
 import { CreateSessionDto } from '../dtos/admin/create-session.dto';
+import { CheckRoomAvailabilityUseCase } from '../../application/use-cases/admin/check-room-availability.use-case';
+import { CreateSessionUseCase } from '../../application/use-cases/admin/create-session.use-case';
 
 @ApiTags('admin')
 @Controller('admin')
 export class AdminController {
+    constructor(
+        private readonly checkRoomAvailabilityUseCase: CheckRoomAvailabilityUseCase,
+        private readonly createSessionUseCase: CreateSessionUseCase,
+    ) {}
+
     @ApiOperation({
         summary:
             'Check room availability for all 4 time slots on a specific date',
@@ -39,11 +54,32 @@ export class AdminController {
     })
     @ApiResponse({ status: 404, description: 'Room not found' })
     @Get('my-cinema/rooms/:roomId/availability')
-    getRoomAvailability(
+    async getRoomAvailability(
         @Param('roomId') roomId: string,
         @Query('date') date: string,
-    ) {
-        return {};
+        @HeadersDecorator('x-user-cinema-id') userCinemaId: string,
+    ): Promise<RoomAvailabilityDto> {
+        const result = await this.checkRoomAvailabilityUseCase.execute(
+            roomId,
+            date,
+            userCinemaId,
+        );
+
+        return {
+            roomId: result.roomId,
+            date: result.date,
+            slots: result.slots.map((slot) => ({
+                time: slot.time,
+                startTime: slot.startTime.toISOString(),
+                isAvailable: slot.isAvailable,
+                sessionInfo: slot.sessionInfo
+                    ? {
+                          sessionId: slot.sessionInfo.sessionId,
+                          filmTitle: slot.sessionInfo.filmTitle,
+                      }
+                    : undefined,
+            })),
+        };
     }
 
     @ApiOperation({ summary: 'Create a new session for a film in a room' })
@@ -64,7 +100,17 @@ export class AdminController {
     })
     @ApiResponse({ status: 404, description: 'Room or film not found' })
     @Post('sessions')
-    createSession(@Body() createSessionDto: CreateSessionDto) {
-        return {};
+    async createSession(
+        @Body() createSessionDto: CreateSessionDto,
+        @HeadersDecorator('x-user-cinema-id') userCinemaId: string,
+    ): Promise<{ sessionId: string }> {
+        const session = await this.createSessionUseCase.execute(
+            createSessionDto.filmId,
+            createSessionDto.roomId,
+            new Date(createSessionDto.startTime),
+            userCinemaId,
+        );
+
+        return { sessionId: session.id };
     }
 }

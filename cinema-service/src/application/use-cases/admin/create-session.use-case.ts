@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { IRoomRepository } from '../../../domain/repositories/room.repository';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { ISeatRepository } from '../../../domain/repositories/seat.repository';
@@ -11,12 +11,20 @@ import { RoomNotFoundException } from '../../../domain/exceptions/room-not-found
 import { InvalidTimeSlotException } from '../../../domain/exceptions/invalid-time-slot.exception';
 import { RoomAlreadyOccupiedException } from '../../../domain/exceptions/room-already-occupied.exception';
 import { UnauthorizedCinemaAccessException } from '../../../domain/exceptions/unauthorized-cinema-access';
+import {
+    ROOM_REPOSITORY,
+    SEAT_REPOSITORY,
+    SESSION_REPOSITORY,
+} from '../../../infrastructure/token';
 
 @Injectable()
 export class CreateSessionUseCase {
     constructor(
+        @Inject(ROOM_REPOSITORY)
         private readonly roomRepository: IRoomRepository,
+        @Inject(SESSION_REPOSITORY)
         private readonly sessionRepository: ISessionRepository,
+        @Inject(SEAT_REPOSITORY)
         private readonly seatRepository: ISeatRepository,
     ) {}
 

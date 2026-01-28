@@ -43,7 +43,7 @@ export class SessionMapper {
     }
 
     static seatOccupationsToPrisma(domain: Session) {
-        return domain.seatOccupations.map(occupation => ({
+        return domain.seatOccupations.map((occupation) => ({
             sessionId: domain.id,
             seatId: occupation.seatId,
             status: occupation.status,

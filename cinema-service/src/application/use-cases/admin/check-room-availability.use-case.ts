@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { IRoomRepository } from '../../../domain/repositories/room.repository';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { IFilmService } from '../../ports/film-service.port';
 import { RoomNotFoundException } from '../../../domain/exceptions/room-not-found.exception';
 import { UnauthorizedCinemaAccessException } from '../../../domain/exceptions/unauthorized-cinema-access';
+import {
+    FILM_SERVICE,
+    ROOM_REPOSITORY,
+    SESSION_REPOSITORY,
+} from '../../../infrastructure/token';
 
 export interface RoomAvailabilityResult {
     roomId: string;
@@ -24,8 +29,11 @@ export class CheckRoomAvailabilityUseCase {
     private static readonly TIME_SLOTS = [10, 13, 16, 19] as const;
 
     constructor(
+        @Inject(ROOM_REPOSITORY)
         private readonly roomRepository: IRoomRepository,
+        @Inject(SESSION_REPOSITORY)
         private readonly sessionRepository: ISessionRepository,
+        @Inject(FILM_SERVICE)
         private readonly filmService: IFilmService,
     ) {}
 

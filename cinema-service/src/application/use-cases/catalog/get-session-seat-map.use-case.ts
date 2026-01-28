@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { ISeatRepository } from '../../../domain/repositories/seat.repository';
 import { IFilmService } from '../../ports/film-service.port';
 import { SessionNotFoundException } from '../../../domain/exceptions/session-not-found.exception';
+import {
+    FILM_SERVICE,
+    SEAT_REPOSITORY,
+    SESSION_REPOSITORY,
+} from '../../../infrastructure/token';
 
 export interface SessionSeatMapResult {
     sessionId: string;
@@ -20,8 +25,11 @@ export interface SessionSeatMapResult {
 @Injectable()
 export class GetSessionSeatMapUseCase {
     constructor(
+        @Inject(SESSION_REPOSITORY)
         private readonly sessionRepository: ISessionRepository,
+        @Inject(SEAT_REPOSITORY)
         private readonly seatRepository: ISeatRepository,
+        @Inject(FILM_SERVICE)
         private readonly filmService: IFilmService,
     ) {}
 

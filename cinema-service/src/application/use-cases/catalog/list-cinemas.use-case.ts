@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ICinemaRepository } from '../../../domain/repositories/cinema.repository';
 import { Cinema } from '../../../domain/entities/cinema.entity';
+import { CINEMA_REPOSITORY } from '../../../infrastructure/token';
 
 @Injectable()
 export class ListCinemasUseCase {
-    constructor(private readonly cinemaRepository: ICinemaRepository) {}
+    constructor(
+        @Inject(CINEMA_REPOSITORY)
+        private readonly cinemaRepository: ICinemaRepository,
+    ) {}
 
     async execute(filters?: {
         city?: string;
