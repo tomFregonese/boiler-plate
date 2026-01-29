@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IRoomRepository } from '../../../domain/repositories/room.repository';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
-import { IFilmService } from '../../ports/film-service.port';
+import { FilmInfo, IFilmService } from '../../ports/film-service.port';
 import { RoomNotFoundException } from '../../../domain/exceptions/room-not-found.exception';
 import { UnauthorizedCinemaAccessException } from '../../../domain/exceptions/unauthorized-cinema-access';
 import {
@@ -19,7 +19,7 @@ export interface RoomAvailabilityResult {
         isAvailable: boolean;
         sessionInfo?: {
             sessionId: string;
-            filmTitle: string;
+            film: FilmInfo;
         };
     }>;
 }
@@ -76,7 +76,7 @@ export class CheckRoomAvailabilityUseCase {
                         isAvailable: false,
                         sessionInfo: {
                             sessionId: existingSession.id,
-                            filmTitle: await this.filmService.getFilmTitle(
+                            film: await this.filmService.getFilmById(
                                 existingSession.filmId,
                             ),
                         },

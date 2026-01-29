@@ -49,8 +49,7 @@ export class SessionController {
         const result = await this.getMovieSessionsUseCase.execute(filmId);
 
         return {
-            filmId: result.filmId,
-            filmTitle: result.filmTitle,
+            film: result.film,
             providers: result.providers.map((provider) => ({
                 cinemaId: provider.cinemaId,
                 cinemaName: provider.cinemaName,
@@ -78,7 +77,7 @@ export class SessionController {
 
         return {
             sessionId: result.sessionId,
-            filmTitle: result.filmTitle,
+            film: result.film,
             rows: result.rows.map((row) => ({
                 rowName: row.rowName,
                 seats: row.seats.map((seat) => ({

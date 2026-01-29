@@ -65,8 +65,7 @@ export class CinemaController {
             cinemaName: result.cinemaName,
             sessions: result.sessions.map((session) => ({
                 sessionId: session.sessionId,
-                filmId: session.filmId,
-                filmTitle: session.filmTitle,
+                film: session.film,
                 startTime: session.startTime.toISOString(),
                 roomName: session.roomName,
             })),

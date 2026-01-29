@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FilmInfoDto } from '../film/film-info.dto';
 
 export class MovieSessionItemDto {
     @ApiProperty({
@@ -35,17 +36,8 @@ export class MovieSessionProviderDto {
 }
 
 export class MovieSessionsDto {
-    @ApiProperty({
-        description: 'Identifier of the film',
-        example: 'film-avatar-2025',
-    })
-    filmId: string;
-
-    @ApiProperty({
-        description: 'Title of the film',
-        example: 'Avatar: Fire and Ash',
-    })
-    filmTitle: string;
+    @ApiProperty({ type: FilmInfoDto })
+    film: FilmInfoDto;
 
     @ApiProperty({
         description: 'List of cinemas offering this film',

@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { FilmInfoDto } from '../film/film-info.dto';
 
 export class SlotInfoDto {
     @ApiProperty({
@@ -7,11 +8,8 @@ export class SlotInfoDto {
     })
     sessionId: string;
 
-    @ApiProperty({
-        description: 'Title of the film scheduled',
-        example: 'Dune: Part Three',
-    })
-    filmTitle: string;
+    @ApiProperty({ type: () => FilmInfoDto })
+    film: FilmInfoDto;
 }
 
 export class SlotDto {

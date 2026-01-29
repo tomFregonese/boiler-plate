@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { ICinemaRepository } from '../../../domain/repositories/cinema.repository';
-import { IFilmService } from '../../ports/film-service.port';
+import { FilmInfo, IFilmService } from '../../ports/film-service.port';
 import {
     CINEMA_REPOSITORY,
     FILM_SERVICE,
@@ -9,8 +9,7 @@ import {
 } from '../../../infrastructure/token';
 
 export interface MovieSessionsResult {
-    filmId: string;
-    filmTitle: string;
+    film: FilmInfo;
     providers: Array<{
         cinemaId: string;
         cinemaName: string;
@@ -34,7 +33,7 @@ export class GetMovieSessionsUseCase {
 
     async execute(filmId: string): Promise<MovieSessionsResult> {
         const sessions = await this.sessionRepository.findByFilmId(filmId);
-        const filmTitle = await this.filmService.getFilmTitle(filmId);
+        const film = await this.filmService.getFilmById(filmId);
 
         const sessionsByCinema = new Map<string, typeof sessions>();
 
@@ -60,8 +59,7 @@ export class GetMovieSessionsUseCase {
         );
 
         return {
-            filmId,
-            filmTitle,
+            film,
             providers,
         };
     }

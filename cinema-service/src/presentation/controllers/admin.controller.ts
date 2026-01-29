@@ -75,7 +75,7 @@ export class AdminController {
                 sessionInfo: slot.sessionInfo
                     ? {
                           sessionId: slot.sessionInfo.sessionId,
-                          filmTitle: slot.sessionInfo.filmTitle,
+                          film: slot.sessionInfo.film,
                       }
                     : undefined,
             })),

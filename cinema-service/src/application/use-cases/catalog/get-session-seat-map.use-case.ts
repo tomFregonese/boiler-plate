@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { ISeatRepository } from '../../../domain/repositories/seat.repository';
-import { IFilmService } from '../../ports/film-service.port';
+import { FilmInfo, IFilmService } from '../../ports/film-service.port';
 import { SessionNotFoundException } from '../../../domain/exceptions/session-not-found.exception';
 import {
     FILM_SERVICE,
@@ -11,7 +11,7 @@ import {
 
 export interface SessionSeatMapResult {
     sessionId: string;
-    filmTitle: string;
+    film: FilmInfo;
     rows: Array<{
         rowName: string;
         seats: Array<{
@@ -40,7 +40,7 @@ export class GetSessionSeatMapUseCase {
         }
 
         const seats = await this.seatRepository.findByRoomId(session.roomId);
-        const filmTitle = await this.filmService.getFilmTitle(session.filmId);
+        const film = await this.filmService.getFilmById(session.filmId);
 
         const rowsMap = new Map<string, typeof seats>();
 
@@ -70,7 +70,7 @@ export class GetSessionSeatMapUseCase {
 
         return {
             sessionId: session.id,
-            filmTitle,
+            film,
             rows,
         };
     }

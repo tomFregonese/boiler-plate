@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FilmInfoDto } from '../film/film-info.dto';
 
 export class SeatDto {
     @ApiProperty({
@@ -42,11 +43,8 @@ export class SessionSeatMapDto {
     })
     sessionId: string;
 
-    @ApiProperty({
-        description: 'Title of the film being screened',
-        example: 'Avatar: Fire and Ash',
-    })
-    filmTitle: string;
+    @ApiProperty({ type: FilmInfoDto })
+    film: FilmInfoDto;
 
     @ApiProperty({
         description: 'List of rows with their seats',

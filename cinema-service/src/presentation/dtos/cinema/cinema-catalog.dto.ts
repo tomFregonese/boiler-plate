@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FilmInfoDto } from '../film/film-info.dto';
 
 export class CinemaCatalogSessionDto {
     @ApiProperty({
@@ -7,17 +8,8 @@ export class CinemaCatalogSessionDto {
     })
     sessionId: string;
 
-    @ApiProperty({
-        description: 'Identifier of the film being screened',
-        example: 'film-avatar-2025',
-    })
-    filmId: string;
-
-    @ApiProperty({
-        description: 'Title of the film',
-        example: 'Avatar: Fire and Ash',
-    })
-    filmTitle: string;
+    @ApiProperty({ type: FilmInfoDto })
+    film: FilmInfoDto;
 
     @ApiProperty({
         description: 'Start time of the session in ISO 8601 UTC format',
