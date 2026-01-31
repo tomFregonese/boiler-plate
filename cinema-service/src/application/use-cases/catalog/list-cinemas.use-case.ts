@@ -14,6 +14,19 @@ export class ListCinemasUseCase {
         city?: string;
         postalCode?: string;
     }): Promise<Cinema[]> {
-        return this.cinemaRepository.findAll(filters);
+        const normalizedFilters = filters
+            ? {
+                  city: filters.city
+                      ? this.capitalize(filters.city)
+                      : undefined,
+                  postalCode: filters.postalCode,
+              }
+            : undefined;
+
+        return this.cinemaRepository.findAll(normalizedFilters);
+    }
+
+    private capitalize(value: string): string {
+        return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
     }
 }

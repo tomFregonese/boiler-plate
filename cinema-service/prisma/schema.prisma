@@ -51,7 +51,8 @@ model Session {
   id              String           @id @default(uuid())
   filmId          String
   roomId          String
-  startTime       DateTime         @db.Timestamp
+  startTime       DateTime         @db.Timestamptz
+  endTime         DateTime         @db.Timestamptz
   room            Room             @relation(fields: [roomId], references: [id], onDelete: Cascade)
   seatOccupations SeatOccupation[]
   createdAt       DateTime         @default(now())

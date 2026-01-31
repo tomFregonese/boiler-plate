@@ -3,7 +3,7 @@ import { IRoomRepository } from '../../../domain/repositories/room.repository';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { FilmInfo, IFilmService } from '../../ports/film-service.port';
 import { RoomNotFoundException } from '../../../domain/exceptions/room-not-found.exception';
-import { UnauthorizedCinemaAccessException } from '../../../domain/exceptions/unauthorized-cinema-access';
+import { UnauthorizedCinemaAccessException } from '../../../domain/exceptions/unauthorized-cinema-access.exception';
 import {
     FILM_SERVICE,
     ROOM_REPOSITORY,
@@ -13,21 +13,16 @@ import {
 export interface RoomAvailabilityResult {
     roomId: string;
     date: string;
-    slots: Array<{
-        time: 10 | 13 | 16 | 19;
+    sessions: Array<{
+        sessionId: string;
+        film: FilmInfo;
         startTime: Date;
-        isAvailable: boolean;
-        sessionInfo?: {
-            sessionId: string;
-            film: FilmInfo;
-        };
+        endTime: Date;
     }>;
 }
 
 @Injectable()
 export class CheckRoomAvailabilityUseCase {
-    private static readonly TIME_SLOTS = [10, 13, 16, 19] as const;
-
     constructor(
         @Inject(ROOM_REPOSITORY)
         private readonly roomRepository: IRoomRepository,
@@ -55,46 +50,25 @@ export class CheckRoomAvailabilityUseCase {
         }
 
         const targetDate = new Date(date);
-        const sessions = await this.sessionRepository.findByRoomIdAndDate(
-            roomId,
-            targetDate,
-        );
+        const existingSessions =
+            await this.sessionRepository.findByRoomIdAndDate(
+                roomId,
+                targetDate,
+            );
 
-        const slots = await Promise.all(
-            CheckRoomAvailabilityUseCase.TIME_SLOTS.map(async (time) => {
-                const startTime = new Date(targetDate);
-                startTime.setHours(time, 0, 0, 0);
-
-                const existingSession = sessions.find(
-                    (s) => s.startTime.getHours() === time,
-                );
-
-                if (existingSession) {
-                    return {
-                        time,
-                        startTime,
-                        isAvailable: false,
-                        sessionInfo: {
-                            sessionId: existingSession.id,
-                            film: await this.filmService.getFilmById(
-                                existingSession.filmId,
-                            ),
-                        },
-                    };
-                }
-
-                return {
-                    time,
-                    startTime,
-                    isAvailable: true,
-                };
-            }),
+        const sessions = await Promise.all(
+            existingSessions.map(async (session) => ({
+                sessionId: session.id,
+                film: await this.filmService.getFilmById(session.filmId),
+                startTime: session.startTime,
+                endTime: session.endTime,
+            })),
         );
 
         return {
             roomId,
             date,
-            slots,
+            sessions,
         };
     }
 }

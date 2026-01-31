@@ -14,9 +14,14 @@ export class CreateSessionDto {
     roomId: string;
 
     @ApiProperty({
-        description:
-            'Start time of the session in ISO 8601 UTC format (must be on a valid slot: 10h, 13h, 16h, or 19h)',
+        description: 'Start time of the session in ISO 8601 UTC format',
         example: '2025-01-26T10:00:00Z',
     })
     startTime: string;
+
+    @ApiProperty({
+        description: 'End time of the session in ISO 8601 UTC format',
+        example: '2025-01-26T13:00:00Z',
+    })
+    endTime: string;
 }

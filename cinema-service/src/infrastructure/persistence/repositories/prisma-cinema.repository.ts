@@ -29,4 +29,12 @@ export class PrismaCinemaRepository implements ICinemaRepository {
 
         return cinema ? CinemaMapper.toDomain(cinema) : null;
     }
+
+    async findByIds(ids: string[]): Promise<Cinema[]> {
+        const cinemas = await this.prisma.cinema.findMany({
+            where: { id: { in: ids } },
+        });
+
+        return cinemas.map((cinema) => CinemaMapper.toDomain(cinema));
+    }
 }

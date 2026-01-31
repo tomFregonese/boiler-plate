@@ -12,6 +12,7 @@ import {
     ApiResponse,
     ApiParam,
     ApiHeader,
+    ApiSecurity,
 } from '@nestjs/swagger';
 import { MovieSessionsDto } from '../dtos/session/movie-sessions.dto';
 import { SessionSeatMapDto } from '../dtos/session/session-seat-map.dto';
@@ -21,6 +22,7 @@ import { GetSessionSeatMapUseCase } from '../../application/use-cases/catalog/ge
 import { BookSeatsUseCase } from '../../application/use-cases/booking/book-seats.use-case';
 
 @ApiTags('sessions')
+@ApiSecurity('x-api-key')
 @Controller()
 export class SessionController {
     constructor(

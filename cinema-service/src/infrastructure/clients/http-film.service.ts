@@ -3,6 +3,7 @@ import {
     IFilmService,
     FilmInfo,
 } from '../../application/ports/film-service.port';
+import {FilmNotFoundException} from "../../domain/exceptions/film-not-found.exception";
 
 @Injectable()
 export class HttpFilmService extends IFilmService {
@@ -297,7 +298,7 @@ export class HttpFilmService extends IFilmService {
         const film = this.mockFilms.get(filmId);
 
         if (!film) {
-            throw new Error(`Film with ID ${filmId} not found`);
+            throw new FilmNotFoundException(filmId);
         }
 
         return film;

@@ -1,19 +1,21 @@
 import {
     Session as PrismaSession,
     SeatOccupation as PrismaSeatOccupation,
-} from '../../../../../generated/prisma/client';
+} from '@prisma/client';
 import { Session } from '../../../../domain/entities/session.entity';
 import {
     SeatOccupation,
     OccupationStatus,
 } from '../../../../domain/entities/seat-occupation.entity';
+import { Room } from '@prisma/client';
 
-type PrismaSessionWithOccupations = PrismaSession & {
+type PrismaSessionWithRoomAndOccupations = PrismaSession & {
     seatOccupations: PrismaSeatOccupation[];
+    room: Room;
 };
 
 export class SessionMapper {
-    static toDomain(prisma: PrismaSessionWithOccupations): Session {
+    static toDomain(prisma: PrismaSessionWithRoomAndOccupations): Session {
         const seatOccupations = prisma.seatOccupations.map(
             (occupation) =>
                 new SeatOccupation(
@@ -28,8 +30,11 @@ export class SessionMapper {
             prisma.id,
             prisma.filmId,
             prisma.roomId,
+            prisma.room.cinemaId,
             prisma.startTime,
+            prisma.endTime,
             seatOccupations,
+            prisma.room.name,
         );
     }
 

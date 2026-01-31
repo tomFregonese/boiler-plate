@@ -1,11 +1,18 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import {
+    ApiTags,
+    ApiOperation,
+    ApiResponse,
+    ApiQuery,
+    ApiSecurity,
+} from '@nestjs/swagger';
 import { CinemaResponseDto } from '../dtos/cinema/cinema-response.dto';
 import { CinemaCatalogDto } from '../dtos/cinema/cinema-catalog.dto';
 import { GetCinemaCatalogUseCase } from '../../application/use-cases/catalog/get-cinema-catalog.use-case';
 import { ListCinemasUseCase } from '../../application/use-cases/catalog/list-cinemas.use-case';
 
 @ApiTags('cinemas')
+@ApiSecurity('x-api-key')
 @Controller('cinemas')
 export class CinemaController {
     constructor(

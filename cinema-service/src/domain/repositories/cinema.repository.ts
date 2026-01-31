@@ -6,4 +6,5 @@ export abstract class ICinemaRepository {
         postalCode?: string;
     }): Promise<Cinema[]>;
     abstract findById(id: string): Promise<Cinema | null>;
+    abstract findByIds(ids: string[]): Promise<Cinema[]>;
 }

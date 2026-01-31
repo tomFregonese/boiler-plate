@@ -5,8 +5,12 @@ export class Session {
         private readonly _id: string,
         private readonly _filmId: string,
         private readonly _roomId: string,
+        private readonly _cinemaId: string,
         private readonly _startTime: Date,
+        private readonly _endTime: Date,
         private _seatOccupations: SeatOccupation[] = [],
+        private readonly _roomName?: string,
+        //private readonly _cinemaName?: string,
     ) {}
 
     get id(): string {
@@ -21,7 +25,15 @@ export class Session {
         return this._roomId;
     }
 
+    get cinemaId(): string {
+        return this._cinemaId;
+    }
+
     get startTime(): Date {
+        return this._startTime;
+    }
+
+    get endTime(): Date {
         return this._startTime;
     }
 
@@ -31,6 +43,10 @@ export class Session {
 
     getTimeSlot(): number {
         return this._startTime.getHours();
+    }
+
+    get roomName(): string {
+        return this._roomName ?? '';
     }
 
     isValidTimeSlot(): boolean {

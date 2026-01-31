@@ -3,10 +3,6 @@ import { ISessionRepository } from '../../../domain/repositories/session.reposit
 import { PrismaService } from '../../../prisma.service';
 import { Session } from '../../../domain/entities/session.entity';
 import { SessionMapper } from '../prisma/mappers/session.mapper';
-import {
-    SeatOccupation,
-    OccupationStatus,
-} from '../../../domain/entities/seat-occupation.entity';
 
 @Injectable()
 export class PrismaSessionRepository implements ISessionRepository {
@@ -17,6 +13,7 @@ export class PrismaSessionRepository implements ISessionRepository {
             where: { id },
             include: {
                 seatOccupations: true,
+                room: true,
             },
         });
 
@@ -28,6 +25,7 @@ export class PrismaSessionRepository implements ISessionRepository {
             where: { filmId },
             include: {
                 seatOccupations: true,
+                room: true,
             },
         });
 
@@ -43,6 +41,7 @@ export class PrismaSessionRepository implements ISessionRepository {
             },
             include: {
                 seatOccupations: true,
+                room: true,
             },
         });
 
@@ -66,6 +65,7 @@ export class PrismaSessionRepository implements ISessionRepository {
             },
             include: {
                 seatOccupations: true,
+                room: true,
             },
         });
 
@@ -78,6 +78,7 @@ export class PrismaSessionRepository implements ISessionRepository {
                 filmId: session.filmId,
                 roomId: session.roomId,
                 startTime: session.startTime,
+                endTime: session.endTime,
                 seatOccupations: {
                     create: session.seatOccupations.map((occupation) => ({
                         seatId: occupation.seatId,
@@ -88,6 +89,7 @@ export class PrismaSessionRepository implements ISessionRepository {
             },
             include: {
                 seatOccupations: true,
+                room: true,
             },
         });
 
@@ -109,6 +111,7 @@ export class PrismaSessionRepository implements ISessionRepository {
             },
             include: {
                 seatOccupations: true,
+                room: true,
             },
         });
 

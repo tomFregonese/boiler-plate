@@ -124,6 +124,7 @@ async function main() {
         filmId: string;
         roomId: string;
         startTime: Date;
+        endTime: Date;
     }> = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -144,11 +145,15 @@ async function main() {
             const startTime = new Date(sessionDate);
             startTime.setHours(timeSlot, 0, 0, 0);
 
+            const endTime = new Date(startTime);
+            endTime.setHours(startTime.getHours() + 2, 30, 0, 0);
+
             const session = await prisma.session.create({
                 data: {
                     filmId,
                     roomId: room.id,
                     startTime,
+                    endTime,
                 },
             });
 

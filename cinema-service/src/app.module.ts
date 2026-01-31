@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CinemaController } from './presentation/controllers/cinema.controller';
@@ -24,6 +24,7 @@ import { PrismaSeatRepository } from './infrastructure/persistence/repositories/
 import { PrismaRoomRepository } from './infrastructure/persistence/repositories/prisma-room.repository';
 import { PrismaService } from './prisma.service';
 import { HttpFilmService } from './infrastructure/clients/http-film.service';
+import { InternalAuthMiddleware } from './presentation/middlewares/internal-auth.middleware';
 
 @Module({
     imports: [],
@@ -70,4 +71,8 @@ import { HttpFilmService } from './infrastructure/clients/http-film.service';
         },
     ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(InternalAuthMiddleware).forRoutes('*');
+    }
+}

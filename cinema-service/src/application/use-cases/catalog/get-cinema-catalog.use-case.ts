@@ -43,7 +43,7 @@ export class GetCinemaCatalogUseCase {
                 sessionId: session.id,
                 film: await this.filmService.getFilmById(session.filmId),
                 startTime: session.startTime,
-                roomName: '', // TODO: get room name
+                roomName: session.roomName,
             })),
         );
 

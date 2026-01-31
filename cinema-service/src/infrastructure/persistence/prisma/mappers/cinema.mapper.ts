@@ -1,4 +1,4 @@
-import type { Cinema as PrismaCinema } from '../../../../../generated/prisma/client';
+import type { Cinema as PrismaCinema } from '@prisma/client';
 import { Cinema } from '../../../../domain/entities/cinema.entity';
 
 export class CinemaMapper {

@@ -14,6 +14,7 @@ import {
     ApiParam,
     ApiQuery,
     ApiHeader,
+    ApiSecurity,
 } from '@nestjs/swagger';
 import { RoomAvailabilityDto } from '../dtos/admin/room-availability.dto';
 import { CreateSessionDto } from '../dtos/admin/create-session.dto';
@@ -21,6 +22,7 @@ import { CheckRoomAvailabilityUseCase } from '../../application/use-cases/admin/
 import { CreateSessionUseCase } from '../../application/use-cases/admin/create-session.use-case';
 
 @ApiTags('admin')
+@ApiSecurity('x-api-key')
 @Controller('admin')
 export class AdminController {
     constructor(
@@ -39,7 +41,7 @@ export class AdminController {
         example: '2025-01-26',
     })
     @ApiHeader({
-        name: 'X-User-Cinema-Id',
+        name: 'x-user-cinema-id',
         description: 'Cinema ID of the authenticated admin',
         required: true,
     })
@@ -68,23 +70,18 @@ export class AdminController {
         return {
             roomId: result.roomId,
             date: result.date,
-            slots: result.slots.map((slot) => ({
-                time: slot.time,
-                startTime: slot.startTime.toISOString(),
-                isAvailable: slot.isAvailable,
-                sessionInfo: slot.sessionInfo
-                    ? {
-                          sessionId: slot.sessionInfo.sessionId,
-                          film: slot.sessionInfo.film,
-                      }
-                    : undefined,
+            sessions: result.sessions.map((session) => ({
+                sessionId: session.sessionId,
+                film: session.film,
+                startTime: session.startTime.toISOString(),
+                endTime: session.endTime.toISOString(),
             })),
         };
     }
 
     @ApiOperation({ summary: 'Create a new session for a film in a room' })
     @ApiHeader({
-        name: 'X-User-Cinema-Id',
+        name: 'x-user-cinema-id',
         description: 'Cinema ID of the authenticated admin',
         required: true,
     })
@@ -108,6 +105,7 @@ export class AdminController {
             createSessionDto.filmId,
             createSessionDto.roomId,
             new Date(createSessionDto.startTime),
+            new Date(createSessionDto.endTime),
             userCinemaId,
         );
 

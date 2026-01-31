@@ -38,24 +38,23 @@ export class GetMovieSessionsUseCase {
         const sessionsByCinema = new Map<string, typeof sessions>();
 
         for (const session of sessions) {
-            const existing = sessionsByCinema.get(session.roomId) || [];
-            sessionsByCinema.set(session.roomId, [...existing, session]);
+            const existing = sessionsByCinema.get(session.cinemaId) || [];
+            sessionsByCinema.set(session.cinemaId, [...existing, session]);
         }
 
-        const providers = await Promise.all(
-            Array.from(sessionsByCinema.entries()).map(
-                async ([roomId, roomSessions]) => {
-                    // TODO: get cinema from roomId
-                    return {
-                        cinemaId: 'todo',
-                        cinemaName: 'todo',
-                        sessions: roomSessions.map((s) => ({
-                            sessionId: s.id,
-                            startTime: s.startTime,
-                        })),
-                    };
-                },
-            ),
+        const cinemaIds = Array.from(sessionsByCinema.keys());
+        const cinemas = await this.cinemaRepository.findByIds(cinemaIds);
+        const cinemaMap = new Map(cinemas.map((c) => [c.id, c]));
+
+        const providers = Array.from(sessionsByCinema.entries()).map(
+            ([cinemaId, cinemaSessions]) => ({
+                cinemaId,
+                cinemaName: cinemaMap.get(cinemaId)?.name ?? '',
+                sessions: cinemaSessions.map((s) => ({
+                    sessionId: s.id,
+                    startTime: s.startTime,
+                })),
+            }),
         );
 
         return {
