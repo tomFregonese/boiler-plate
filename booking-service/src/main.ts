@@ -8,8 +8,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   const config = new DocumentBuilder()
     .setTitle('Booking Service')
-    .setDescription('The Booking API description')
-    .setVersion('0.1')
+    .setDescription(
+      'Microservice de réservation : création, confirmation, annulation, paiement optionnel. IDs échangés entre services en String (UUID/CUID).',
+    )
+    .setVersion('1.0.0')
+    .addTag('Bookings')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

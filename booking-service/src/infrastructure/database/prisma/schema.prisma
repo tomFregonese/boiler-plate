@@ -19,16 +19,21 @@ model Booking {
   updatedAt   DateTime      @updatedAt
 
   payment     Payment?
+
+  @@index([screeningId])
+  @@index([userId])
 }
 
 model BookingSeat {
   id        String  @id @default(cuid())
   bookingId String
+  screeningId String
   seatId    String
 
   booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
-  @@unique([bookingId, seatId])
+  @@unique([screeningId, seatId])
+  @@index([bookingId])
   @@index([seatId])
 }
 
