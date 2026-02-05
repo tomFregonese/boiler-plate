@@ -1,8 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {BadRequestException, Inject, Injectable} from '@nestjs/common';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { SessionNotFoundException } from '../../../domain/exceptions/session-not-found.exception';
 import { SeatsAlreadyOccupiedException } from '../../../domain/exceptions/seats-already-occupied.exception';
 import { SESSION_REPOSITORY } from '../../../infrastructure/token';
+import {SeatsNotFoundException} from "../../../domain/exceptions/seats-not-found.exception";
 
 @Injectable()
 export class BookSeatsUseCase {
@@ -20,10 +21,25 @@ export class BookSeatsUseCase {
         if (!session) {
             throw new SessionNotFoundException(sessionId);
         }
+        console.log(`Seats occupations : `);
+        session.seatOccupations.map((seatOccupation) =>
+            console.log(seatOccupation),
+        );
+
+        const existingSeats = session.seatOccupations
+            .filter((o) => seatIds.includes(o.seatId))
+            .map((o) => o.seatId);
+
+        if (existingSeats.length < 0) {
+            throw new SeatsNotFoundException(session.roomId);
+        }
 
         const occupiedSeats = session.seatOccupations
-            .filter((o) => seatIds.includes(o.seatId) && !o.isFree())
+            .filter((o) => existingSeats.includes(o.seatId) && !o.isFree())
             .map((o) => o.seatId);
+
+        console.log(`occupiedSeats : `);
+        console.log(occupiedSeats);
 
         if (occupiedSeats.length > 0) {
             throw new SeatsAlreadyOccupiedException(occupiedSeats);

@@ -110,6 +110,7 @@ export class SessionController {
         @Body() bookSeatsDto: BookSeatsDto,
         @HeadersDecorator('X-User-Id') userId: string,
     ): Promise<void> {
+        console.log('haaaa');
         await this.bookSeatsUseCase.execute(
             sessionId,
             bookSeatsDto.seatIds,

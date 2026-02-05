@@ -23,7 +23,7 @@ import { PrismaSessionRepository } from './infrastructure/persistence/repositori
 import { PrismaSeatRepository } from './infrastructure/persistence/repositories/prisma-seat.repository';
 import { PrismaRoomRepository } from './infrastructure/persistence/repositories/prisma-room.repository';
 import { PrismaService } from './prisma.service';
-import { HttpFilmService } from './infrastructure/clients/http-film.service';
+import { HttpFilmService } from './infrastructure/clients/film/http-film.service';
 import { InternalAuthMiddleware } from './presentation/middlewares/internal-auth.middleware';
 
 @Module({

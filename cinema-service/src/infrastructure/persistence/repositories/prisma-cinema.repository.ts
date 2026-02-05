@@ -14,8 +14,12 @@ export class PrismaCinemaRepository implements ICinemaRepository {
     }): Promise<Cinema[]> {
         const cinemas = await this.prisma.cinema.findMany({
             where: {
-                ...(filters?.city && { city: filters.city }),
-                ...(filters?.postalCode && { postalCode: filters.postalCode }),
+                city: filters?.city
+                    ? { contains: filters.city, mode: 'insensitive' }
+                    : undefined,
+                postalCode: filters?.postalCode
+                    ? { equals: filters.postalCode }
+                    : undefined,
             },
         });
 
