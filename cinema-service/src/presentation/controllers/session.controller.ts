@@ -94,10 +94,15 @@ export class SessionController {
     @ApiOperation({ summary: 'Book seats for a session' })
     @ApiParam({ name: 'id', description: 'Unique identifier of the session' })
     @ApiHeader({
-        name: 'X-User-Id',
+        name: 'x-user-id',
         description: 'User identifier injected by the gateway',
         required: true,
     })
+/*    @ApiHeader({
+        name: 'X-User-Role',
+        description: 'User role injected by the gateway',
+        required: true,
+    })*/
     @ApiResponse({ status: 200, description: 'Seats booked successfully' })
     @ApiResponse({
         status: 400,
@@ -108,9 +113,9 @@ export class SessionController {
     async bookSeats(
         @Param('id') sessionId: string,
         @Body() bookSeatsDto: BookSeatsDto,
-        @HeadersDecorator('X-User-Id') userId: string,
+        @HeadersDecorator('x-user-id') userId: string,
+        //@HeadersDecorator('X-User-Role') userRole: string,
     ): Promise<void> {
-        console.log('haaaa');
         await this.bookSeatsUseCase.execute(
             sessionId,
             bookSeatsDto.seatIds,

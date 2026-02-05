@@ -41,8 +41,8 @@ export class AdminController {
         example: '2025-01-26',
     })
     @ApiHeader({
-        name: 'x-user-cinema-id',
-        description: 'Cinema ID of the authenticated admin',
+        name: 'x-user-role',
+        description: 'User role injected by the gateway',
         required: true,
     })
     @ApiResponse({
@@ -59,12 +59,12 @@ export class AdminController {
     async getRoomAvailability(
         @Param('roomId') roomId: string,
         @Query('date') date: string,
-        @HeadersDecorator('x-user-cinema-id') userCinemaId: string,
+        @HeadersDecorator('x-user-role') userRole: string,
     ): Promise<RoomAvailabilityDto> {
         const result = await this.checkRoomAvailabilityUseCase.execute(
             roomId,
             date,
-            userCinemaId,
+            userRole,
         );
 
         return {

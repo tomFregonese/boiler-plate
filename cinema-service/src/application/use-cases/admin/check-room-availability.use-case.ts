@@ -35,18 +35,15 @@ export class CheckRoomAvailabilityUseCase {
     async execute(
         roomId: string,
         date: string,
-        userCinemaId: string,
+        userRole: string,
     ): Promise<RoomAvailabilityResult> {
+        if (userRole === 'admin') {
+            throw new UnauthorizedCinemaAccessException();
+        }
+
         const room = await this.roomRepository.findById(roomId);
         if (!room) {
             throw new RoomNotFoundException(roomId);
-        }
-
-        if (room.cinemaId !== userCinemaId) {
-            throw new UnauthorizedCinemaAccessException(
-                userCinemaId,
-                room.cinemaId,
-            );
         }
 
         const targetDate = new Date(date);

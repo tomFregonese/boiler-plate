@@ -1,6 +1,6 @@
 export class UnauthorizedCinemaAccessException extends Error {
-    constructor(userId: string, cinemaId: string) {
-        super(`User ${userId} is not authorized to access cinema ${cinemaId}`);
+    constructor() {
+        super(`This user is not authorized to access cinema`);
         this.name = 'UnauthorizedCinemaAccessException';
     }
 }
