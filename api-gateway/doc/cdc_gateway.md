@@ -89,6 +89,16 @@ Préfixe : `/api`
 - Assigne le rôle "ROLE_USER" par défaut
 - Retourne l'objet compte (sans token)
 
+**Requête (creatAccountRequest):**
+```json
+{
+  "login": "string",
+  "password": "string",
+  "roles": ["ROLE_USER | ROLE_ADMIN"],
+  "status": "string"
+}
+```
+
 **Réponse :**
 ```json
 {
@@ -113,11 +123,12 @@ Préfixe : `/api`
 3. Auth génère JWT + refresh token
 4. Retour des tokens au client
 
-**Body attendu :**
+**Body attendu (createTokenRequest):**
 ```json
 {
   "login": "string",
-  "password": "string"
+  "password": "string",
+   "from": "string"
 }
 ```
 
@@ -125,9 +136,9 @@ Préfixe : `/api`
 ```json
 {
   "accessToken": "string (JWT)",
+   "accessTokenExpiresAt": "ISO8601",
   "refreshToken": "string (UUID)",
-  "accessTokenExpiry": "ISO8601",
-  "refreshTokenExpiry": "ISO8601"
+  "refreshTokenExpiresAt": "ISO8601"
 }
 ```
 
@@ -213,12 +224,13 @@ Cet endpoint est implémenté dans le service Auth pour respecter le contrat d'i
 - ROLE_USER : peut modifier uniquement son propre compte
 - ROLE_ADMIN : peut modifier n'importe quel compte + promouvoir ROLE_USER en ROLE_ADMIN
 
-**Body attendu :**
+**Body attendu (editAccountRequest):**
 ```json
 {
   "login": "string (optional)",
   "password": "string (optional)",
-  "roles": ["ROLE_ADMIN"] //(optional, ROLE_ADMIN uniquement)
+  "roles": ["ROLE_ADMIN"],
+   "status": "string"
 }
 ```
 

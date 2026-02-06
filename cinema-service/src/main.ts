@@ -20,16 +20,16 @@ async function bootstrap() {
         .addTag('cinemas')
         .addTag('sessions')
         .addTag('admin')
-        .addSecurity('x-api-key', {
+        .addSecurity('X-Api-Key', {
             type: 'apiKey',
             in: 'header',
-            name: 'x-api-key',
+            name: 'X-Api-Key',
         })
         .build();
 
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, documentFactory);
 
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(3003);
 }
 bootstrap();
