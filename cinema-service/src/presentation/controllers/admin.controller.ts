@@ -22,7 +22,7 @@ import { CheckRoomAvailabilityUseCase } from '../../application/use-cases/admin/
 import { CreateSessionUseCase } from '../../application/use-cases/admin/create-session.use-case';
 
 @ApiTags('admin')
-@ApiSecurity('x-api-key')
+@ApiSecurity('X-Api-Key')
 @Controller('admin')
 export class AdminController {
     constructor(
@@ -41,7 +41,7 @@ export class AdminController {
         example: '2025-01-26',
     })
     @ApiHeader({
-        name: 'x-user-role',
+        name: 'X-User-Role',
         description: 'User role injected by the gateway',
         required: true,
     })
@@ -55,11 +55,11 @@ export class AdminController {
         description: 'Forbidden - Admin does not have access to this room',
     })
     @ApiResponse({ status: 404, description: 'Room not found' })
-    @Get('my-cinema/rooms/:roomId/availability')
+    @Get('rooms/:roomId/availability')
     async getRoomAvailability(
         @Param('roomId') roomId: string,
         @Query('date') date: string,
-        @HeadersDecorator('x-user-role') userRole: string,
+        @HeadersDecorator('X-User-Role') userRole: string,
     ): Promise<RoomAvailabilityDto> {
         const result = await this.checkRoomAvailabilityUseCase.execute(
             roomId,
@@ -81,8 +81,8 @@ export class AdminController {
 
     @ApiOperation({ summary: 'Create a new session for a film in a room' })
     @ApiHeader({
-        name: 'x-user-cinema-id',
-        description: 'Cinema ID of the authenticated admin',
+        name: 'X-User-Role',
+        description: 'User role injected by the gateway',
         required: true,
     })
     @ApiResponse({ status: 201, description: 'Session created successfully' })
@@ -99,14 +99,14 @@ export class AdminController {
     @Post('sessions')
     async createSession(
         @Body() createSessionDto: CreateSessionDto,
-        @HeadersDecorator('x-user-cinema-id') userCinemaId: string,
+        @HeadersDecorator('X-User-Role') userRole: string,
     ): Promise<{ sessionId: string }> {
         const session = await this.createSessionUseCase.execute(
             createSessionDto.filmId,
             createSessionDto.roomId,
             new Date(createSessionDto.startTime),
             new Date(createSessionDto.endTime),
-            userCinemaId,
+            userRole,
         );
 
         return { sessionId: session.id };

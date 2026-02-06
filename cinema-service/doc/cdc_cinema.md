@@ -85,8 +85,11 @@ Les DTOs suivants definissent les echanges de la couche Presentation.
 ### 5.1 Endpoints de Consultation (Publics)
 
 GET /cinemas
-- Usage : Lister tous les etablissements.
-- Response : CinemaResponseDTO[] { id: string, name: string, address: string }
+- Usage : Lister tous les établissements avec filtrage optionnel.
+- Query Parameters :
+  - `city` (optional) : Filtrer par ville
+  - `postalCode` (optional) : Filtrer par code postal
+- Response : CinemaResponseDTO[] { id: string, name: string, address: string, city: string, postalCode: string }
 
 GET /cinemas/:id/catalog
 - Usage : Programmation d'un cinema (UC 4).
@@ -112,17 +115,17 @@ GET /sessions/:id/seats
 
 Requiert le rôle ROLE_ADMIN (vérifié via header X-User-Role).
 
-GET /admin/cinemas/:cinemaId/rooms/:roomId/availability?date=YYYY-MM-DD
-- Usage : Verifier les disponibilites des 4 creneaux d'une salle (UC 2).
+GET /admin/rooms/:roomId/availability?date=YYYY-MM-DD
+- Usage : Consulter les séances existantes pour une salle à une date donnée (UC 2).
 - Response : RoomAvailabilityDTO
   - roomId: string
-  - cinemaId: string
-  - date: string
-  - slots: Array<{ time: 10 | 13 | 16 | 19, startTime: string, isAvailable: boolean, sessionInfo?: { sessionId: string, filmTitle: string } }>
+  - date: string (YYYY-MM-DD)
+  - sessions: Array<{ sessionId: string, film: FilmInfoDTO, startTime: string, endTime: string }>
 
 POST /admin/sessions
-- Usage : Creer une seance (UC 2).
-- Request Body : CreateSessionDTO { filmId: string, roomId: string, startTime: string }
+- Usage : Créer une séance (UC 2).
+- Request Body : CreateSessionDTO { filmId: string, roomId: string, startTime: string, endTime: string }
+- Response : { sessionId: string }
 - Note : Le cinemaId est déduit automatiquement via le roomId. Tout administrateur peut créer une séance pour n'importe quel établissement.
 
 ### 5.3 Endpoints de Reservation (Metier)
@@ -149,7 +152,7 @@ Aucune authentification requise. Accessibles à tous les visiteurs.
 Requiert un utilisateur authentifié (ROLE_USER ou ROLE_ADMIN).
 
 ### Endpoints Administrateur
-- GET /admin/cinemas/:cinemaId/rooms/:roomId/availability
+- GET /admin/rooms/:roomId/availability
 - POST /admin/sessions
 
-Requiert le rôle ROLE_ADMIN. Aucune restriction par établissement : un administrateur peut gérer tous les cinémas de la plateforme.
+Requiert le rôle ROLE_ADMIN. Aucune restriction par établissement : un administrateur peut gérer toutes les salles et créer des séances dans tous les cinémas de la plateforme.

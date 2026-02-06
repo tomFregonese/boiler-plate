@@ -32,18 +32,15 @@ export class CreateSessionUseCase {
         roomId: string,
         startTime: Date,
         endTime: Date,
-        userCinemaId: string,
+        userRole: string,
     ): Promise<Session> {
+        if (userRole === 'admin') {
+            throw new UnauthorizedCinemaAccessException();
+        }
+
         const room = await this.roomRepository.findById(roomId);
         if (!room) {
             throw new RoomNotFoundException(roomId);
-        }
-
-        if (room.cinemaId !== userCinemaId) {
-            throw new UnauthorizedCinemaAccessException(
-                userCinemaId,
-                room.cinemaId,
-            );
         }
 
         if (startTime >= endTime) {

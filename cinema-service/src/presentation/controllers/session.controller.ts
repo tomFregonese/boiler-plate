@@ -22,7 +22,7 @@ import { GetSessionSeatMapUseCase } from '../../application/use-cases/catalog/ge
 import { BookSeatsUseCase } from '../../application/use-cases/booking/book-seats.use-case';
 
 @ApiTags('sessions')
-@ApiSecurity('x-api-key')
+@ApiSecurity('X-Api-Key')
 @Controller()
 export class SessionController {
     constructor(
@@ -94,7 +94,7 @@ export class SessionController {
     @ApiOperation({ summary: 'Book seats for a session' })
     @ApiParam({ name: 'id', description: 'Unique identifier of the session' })
     @ApiHeader({
-        name: 'x-user-id',
+        name: 'X-User-Id',
         description: 'User identifier injected by the gateway',
         required: true,
     })
@@ -113,7 +113,7 @@ export class SessionController {
     async bookSeats(
         @Param('id') sessionId: string,
         @Body() bookSeatsDto: BookSeatsDto,
-        @HeadersDecorator('x-user-id') userId: string,
+        @HeadersDecorator('X-User-Id') userId: string,
         //@HeadersDecorator('X-User-Role') userRole: string,
     ): Promise<void> {
         await this.bookSeatsUseCase.execute(
