@@ -34,7 +34,7 @@ export class CreateSessionUseCase {
         endTime: Date,
         userRole: string,
     ): Promise<Session> {
-        if (userRole === 'admin') {
+        if (userRole !== 'ROLE_ADMIN') {
             throw new UnauthorizedCinemaAccessException();
         }
 

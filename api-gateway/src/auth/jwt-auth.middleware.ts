@@ -18,6 +18,7 @@ export class JwtAuthMiddleware implements NestMiddleware {
 
   constructor() {
     this.jwtSecret = process.env.JWT_SECRET || '';
+
     if (!this.jwtSecret) {
       console.warn('WARNING: JWT_SECRET is not set');
     }

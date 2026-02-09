@@ -4,6 +4,7 @@ import { AuthAdapter } from './auth.adapter.js';
 import { CreateAccountDto } from './dtos/create-account.dto.js';
 import { LoginDto } from './dtos/login.dto.js';
 import { UpdateAccountDto } from './dtos/update-account.dto.js';
+import {ApiBearerAuth} from "@nestjs/swagger";
 
 @Controller('api/auth')
 export class AuthProxyController {
@@ -46,6 +47,7 @@ export class AuthProxyController {
   }
 
   @Get('account/:uid')
+  @ApiBearerAuth()
   getAccount(
     @Param('uid') uid: string,
     @Req() req: Request,

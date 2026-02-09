@@ -15,6 +15,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(JwtAuthMiddleware, AdminGuardMiddleware, HeadersInjectionMiddleware)
-      .forRoutes('/api/*path');
+      .forRoutes('*');
   }
 }

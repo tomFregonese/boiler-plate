@@ -20,10 +20,10 @@ async function bootstrap() {
         .addTag('cinemas')
         .addTag('sessions')
         .addTag('admin')
-        .addSecurity('X-Api-Key', {
+        .addSecurity('x-api-key', {
             type: 'apiKey',
             in: 'header',
-            name: 'X-Api-Key',
+            name: 'x-api-key',
         })
         .build();
 

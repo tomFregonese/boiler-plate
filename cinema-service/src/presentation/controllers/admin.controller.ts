@@ -22,7 +22,7 @@ import { CheckRoomAvailabilityUseCase } from '../../application/use-cases/admin/
 import { CreateSessionUseCase } from '../../application/use-cases/admin/create-session.use-case';
 
 @ApiTags('admin')
-@ApiSecurity('X-Api-Key')
+@ApiSecurity('x-api-key')
 @Controller('admin')
 export class AdminController {
     constructor(
@@ -41,7 +41,7 @@ export class AdminController {
         example: '2025-01-26',
     })
     @ApiHeader({
-        name: 'X-User-Role',
+        name: 'x-user-role',
         description: 'User role injected by the gateway',
         required: true,
     })
@@ -59,7 +59,7 @@ export class AdminController {
     async getRoomAvailability(
         @Param('roomId') roomId: string,
         @Query('date') date: string,
-        @HeadersDecorator('X-User-Role') userRole: string,
+        @HeadersDecorator('x-user-role') userRole: string,
     ): Promise<RoomAvailabilityDto> {
         const result = await this.checkRoomAvailabilityUseCase.execute(
             roomId,
@@ -81,7 +81,7 @@ export class AdminController {
 
     @ApiOperation({ summary: 'Create a new session for a film in a room' })
     @ApiHeader({
-        name: 'X-User-Role',
+        name: 'x-user-role',
         description: 'User role injected by the gateway',
         required: true,
     })
@@ -99,7 +99,7 @@ export class AdminController {
     @Post('sessions')
     async createSession(
         @Body() createSessionDto: CreateSessionDto,
-        @HeadersDecorator('X-User-Role') userRole: string,
+        @HeadersDecorator('x-user-role') userRole: string,
     ): Promise<{ sessionId: string }> {
         const session = await this.createSessionUseCase.execute(
             createSessionDto.filmId,

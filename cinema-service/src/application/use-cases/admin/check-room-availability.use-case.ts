@@ -37,7 +37,7 @@ export class CheckRoomAvailabilityUseCase {
         date: string,
         userRole: string,
     ): Promise<RoomAvailabilityResult> {
-        if (userRole === 'admin') {
+        if (userRole !== 'ROLE_ADMIN') {
             throw new UnauthorizedCinemaAccessException();
         }
 

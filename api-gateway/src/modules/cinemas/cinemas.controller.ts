@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { CinemasAdapter } from './cinemas.adapter.js';
 import { BookSeatsDto } from './dtos/book-seats.dto.js';
 import { CreateSessionDto } from './dtos/create-session.dto.js';
+import {ApiBearerAuth} from "@nestjs/swagger";
 
 @Controller('api/cinemas')
 export class CinemasController {
@@ -41,6 +42,7 @@ export class CinemasController {
   }
 
   @Post('sessions/:id/book')
+  @ApiBearerAuth()
   bookSeats(
     @Body() _body: BookSeatsDto,
     @Param('id') id: string,
@@ -51,6 +53,7 @@ export class CinemasController {
   }
 
   @Get('admin/rooms/:roomId/availability')
+  @ApiBearerAuth()
   checkRoomAvailability(
     @Param('roomId') roomId: string,
     @Query('date') _date: string,
@@ -61,6 +64,7 @@ export class CinemasController {
   }
 
   @Post('admin/sessions')
+  @ApiBearerAuth()
   createSession(
     @Body() _body: CreateSessionDto,
     @Req() req: Request,
