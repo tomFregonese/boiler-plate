@@ -1,9 +1,14 @@
-export enum Role {
+/*export enum Role {
   CLIENT = 'CLIENT',
   CINEMA_STAFF = 'CINEMA_STAFF',
   CINEMA_MANAGER = 'CINEMA_MANAGER',
   CINEMA_ADMIN = 'CINEMA_ADMIN',
   SUPER_ADMIN = 'SUPER_ADMIN',
+}*/
+
+export enum Role {
+  ROLE_USER = 'ROLE_USER',
+  ROLE_ADMIN = 'ROLE_ADMIN',
 }
 
 export class User {
@@ -25,7 +30,7 @@ export class User {
     password: string,
     firstName?: string,
     lastName?: string,
-    role: Role = Role.CLIENT,
+    role: Role = Role.ROLE_USER,
     cinemaId?: string,
   ): User {
     return new User(

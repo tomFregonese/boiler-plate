@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../domain/repositories/user-repository.interface';
 import { User, Role } from '../../domain/entities/user.entity';
 import { PrismaService } from '../database/prisma/prisma.service';
+import { Role as PrismaRole } from '@prisma/client';
 
 @Injectable()
 export class PrismaUserRepository implements IUserRepository {
@@ -14,7 +15,7 @@ export class PrismaUserRepository implements IUserRepository {
         password: user.password,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
+        role: this.toPrismaRole(user.role),
         cinemaId: user.cinemaId,
         isActive: user.isActive,
       },
@@ -48,5 +49,13 @@ export class PrismaUserRepository implements IUserRepository {
       prismaUser.createdAt,
       prismaUser.updatedAt,
     );
+  }
+
+  private toPrismaRole(role: Role): PrismaRole {
+    const map: Record<Role, PrismaRole> = {
+      [Role.ROLE_USER]: PrismaRole.ROLE_USER,
+      [Role.ROLE_ADMIN]: PrismaRole.ROLE_ADMIN,
+    };
+    return map[role];
   }
 }

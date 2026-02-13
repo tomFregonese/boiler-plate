@@ -7,9 +7,10 @@ import { HeadersInjectionMiddleware } from './common/middlewares/headers-injecti
 import { MoviesModule } from './modules/movies/movies.module.js';
 import { AuthProxyModule } from './modules/auth/auth-proxy.module.js';
 import { CinemasModule } from './modules/cinemas/cinemas.module.js';
+import {BookingModule} from "./modules/booking/booking.module";
 
 @Module({
-  imports: [AuthModule, HealthModule, MoviesModule, AuthProxyModule, CinemasModule],
+  imports: [AuthModule, HealthModule, MoviesModule, AuthProxyModule, CinemasModule, BookingModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
