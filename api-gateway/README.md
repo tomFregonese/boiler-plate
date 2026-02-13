@@ -5,12 +5,13 @@ Point d'entree unique de l'application de reservation cinema. Gere le routage, l
 ## Prerequis
 
 - Node.js >= 20
-- Yarn
+- Yarn (de préférence)
 
 ## Installation
 
 ```bash
 yarn install
+# ou npm install
 ```
 
 ## Configuration
@@ -41,6 +42,7 @@ BOOKINGS_SERVICE_URL=http://localhost:3004
 
 ```bash
 yarn start:dev
+# ou npm run start:dev
 ```
 
 La gateway est accessible sur `http://localhost:3000`.  
