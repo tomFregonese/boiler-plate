@@ -30,6 +30,12 @@ async function bootstrap() {
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, documentFactory);
 
-    await app.listen(3003);
+    const port = process.env.PORT || 3003;
+    await app.listen(port);
+
+    console.log(`API Gateway running on http://localhost:${port}`);
+    console.log(
+        `Swagger documentation available at http://localhost:${port}/api/docs`,
+    );
 }
 bootstrap();

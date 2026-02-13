@@ -7,11 +7,8 @@ datasource db {
 }
 
 enum Role {
-  CLIENT
-  CINEMA_STAFF
-  CINEMA_MANAGER
-  CINEMA_ADMIN
-  SUPER_ADMIN
+  ROLE_USER
+  ROLE_ADMIN
 }
 
 model User {
@@ -20,7 +17,7 @@ model User {
   password  String
   firstName String?
   lastName  String?
-  role      Role     @default(CLIENT)
+  role      Role     @default(ROLE_USER)
   cinemaId  String?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())

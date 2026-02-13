@@ -11,16 +11,16 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 const FILM_IDS = [
-    'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-    '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-    '550e8400-e29b-41d4-a716-446655440000',
-    '7c9e6679-7425-40de-944b-e07fc1f90ae7',
-    '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
-    '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
-    'c56a4180-65aa-42ec-a945-5fd21dec0538',
-    'a3bb189e-8bf9-3888-9912-ace4e6543002',
-    '6ecd8c99-4036-403d-bf84-cf8400f67836',
+    'tt15239678', // Dune: Part Two (2024)
+    'tt15398776', // Oppenheimer (2023)
+    'tt1517268', // Barbie (2023)
+    'tt1877830', // The Batman (2022)
+    'tt1630029', // Avatar: The Way of Water (2022)
+    'tt1745960', // Top Gun: Maverick (2022)
+    'tt10872600', // Spider-Man: No Way Home (2021)
+    'tt1375666', // Inception (2010)
+    'tt0816692', // Interstellar (2014)
+    'tt0468569', // The Dark Knight (2008)
 ];
 
 const TIME_SLOTS = [10, 13, 16, 19];

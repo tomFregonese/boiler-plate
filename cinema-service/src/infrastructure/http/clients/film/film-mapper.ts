@@ -1,5 +1,5 @@
 import { OmdbMovie } from './omdb-movie.type';
-import { FilmInfo } from '../../../application/ports/film-service.port';
+import { FilmInfo } from '../../../../application/ports/film-service.port';
 
 export class FilmMapper {
     static toDomain(raw: OmdbMovie): FilmInfo {
@@ -8,7 +8,7 @@ export class FilmMapper {
             title: raw.Title,
             director: raw.Director,
             releaseYear: parseInt(raw.Year, 10),
-            durationMinutes: parseInt(raw.Runtime.split(' ')[0], 10),
+            durationMinutes: parseInt(raw.Runtime?.split(' ')[0], 10) || 0,
             posterUrl: raw.Poster,
             synopsis: raw.Plot,
         };
