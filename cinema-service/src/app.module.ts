@@ -18,16 +18,22 @@ import {
     SESSION_REPOSITORY,
     FILM_SERVICE,
 } from './infrastructure/token';
-import { PrismaCinemaRepository } from './infrastructure/persistence/repositories/prisma-cinema.repository';
-import { PrismaSessionRepository } from './infrastructure/persistence/repositories/prisma-session.repository';
-import { PrismaSeatRepository } from './infrastructure/persistence/repositories/prisma-seat.repository';
-import { PrismaRoomRepository } from './infrastructure/persistence/repositories/prisma-room.repository';
+import { PrismaCinemaRepository } from './infrastructure/database/repositories/prisma-cinema.repository';
+import { PrismaSessionRepository } from './infrastructure/database/repositories/prisma-session.repository';
+import { PrismaSeatRepository } from './infrastructure/database/repositories/prisma-seat.repository';
+import { PrismaRoomRepository } from './infrastructure/database/repositories/prisma-room.repository';
 import { PrismaService } from './prisma.service';
-import { HttpFilmService } from './infrastructure/clients/film/http-film.service';
+import { HttpFilmService } from './infrastructure/http/clients/film/http-film.service';
 import { InternalAuthMiddleware } from './presentation/middlewares/internal-auth.middleware';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-    imports: [],
+    imports: [
+        HttpModule.register({
+            baseURL: process.env.FILMS_SERVICE_URL ?? 'http://localhost:3002',
+            timeout: 5000,
+        }),
+    ],
     controllers: [
         AppController,
         CinemaController,
