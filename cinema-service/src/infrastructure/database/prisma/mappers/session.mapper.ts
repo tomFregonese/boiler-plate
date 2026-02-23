@@ -38,12 +38,15 @@ export class SessionMapper {
         );
     }
 
-    static toPrisma(domain: Session) {
+    static toPrisma(
+        domain: Session,
+    ): Pick<PrismaSession, 'id' | 'filmId' | 'roomId' | 'startTime' | 'endTime'> {
         return {
             id: domain.id,
             filmId: domain.filmId,
             roomId: domain.roomId,
             startTime: domain.startTime,
+            endTime: domain.endTime,
         };
     }
 
