@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { BookingAdapter } from './booking.adapter.js';
-import {CreateBookingDto} from "./dtos/create-booking.dto";
+import { CreateBookingDto } from './dtos/create-booking.dto.js';
 
 @Controller('api/bookings')
 export class BookingController {
