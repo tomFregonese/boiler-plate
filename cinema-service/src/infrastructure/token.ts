@@ -1,0 +1,5 @@
+export const CINEMA_REPOSITORY = Symbol('CINEMA_REPOSITORY');
+export const ROOM_REPOSITORY = Symbol('ROOM_REPOSITORY');
+export const SESSION_REPOSITORY = Symbol('SESSION_REPOSITORY');
+export const SEAT_REPOSITORY = Symbol('SEAT_REPOSITORY');
+export const FILM_SERVICE = Symbol('FILM_SERVICE');

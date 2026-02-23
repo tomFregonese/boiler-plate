@@ -1,0 +1,65 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+  userId      String
+  screeningId String
+  status      BookingStatus @default(PENDING)
+
+  seats       BookingSeat[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  payment     Payment?
+
+  @@index([screeningId])
+  @@index([userId])
+}
+
+model BookingSeat {
+  id        String  @id @default(cuid())
+  bookingId String
+  screeningId String
+  seatId    String
+
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@unique([screeningId, seatId])
+  @@index([bookingId])
+  @@index([seatId])
+}
+
+model Payment {
+  id          String        @id @default(uuid())
+  bookingId   String        @unique
+  provider    String
+
+  amount      Int           
+  currency    String        
+  status      PaymentStatus @default(PENDING)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}

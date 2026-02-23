@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  auth-db:
+    image: postgres:13.5
+    container_name: auth-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${AUTH_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${AUTH_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${AUTH_POSTGRES_DB}
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+    ports:
+      - '${AUTH_POSTGRES_PORT}:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${AUTH_POSTGRES_USER} -d ${AUTH_POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cinema-db:
+    image: postgres:15-alpine
+    container_name: cinema-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${CINEMA_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${CINEMA_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${CINEMA_POSTGRES_DB}
+    volumes:
+      - cinema_data:/var/lib/postgresql/data
+    ports:
+      - '${CINEMA_POSTGRES_PORT}:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${CINEMA_POSTGRES_USER} -d ${CINEMA_POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  booking-db:
+    image: postgres:13.5
+    container_name: booking-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${BOOKING_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${BOOKING_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${BOOKING_POSTGRES_DB}
+    volumes:
+      - booking_data:/var/lib/postgresql/data
+    ports:
+      - '${BOOKING_POSTGRES_PORT}:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${BOOKING_POSTGRES_USER} -d ${BOOKING_POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  auth_data:
+  cinema_data:
+  booking_data:

@@ -35,7 +35,7 @@ export class OmdbClient {
   }
 
   private getApiKey(): string {
-    const apiKey = process.env.OMDBAPI_KEY;
+    const apiKey = process.env.OMDB_API_KEY;
     if (!apiKey) {
       throw new ServiceUnavailableException(
         'OMDBAPI_KEY is missing. Set it in the environment.',
