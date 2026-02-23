@@ -84,7 +84,7 @@ make stop
 make stop-studio
 
 # Stoper et supprimer les containers db (les données sont sauvegardées dans leurs volumes sont conservées)
-make stop-db
+make db-stop
 
 #  ! Nettoyer tous les processus Nest !
 make panic
