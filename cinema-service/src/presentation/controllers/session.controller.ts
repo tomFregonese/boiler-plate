@@ -17,7 +17,7 @@ import {
 import { MovieSessionsDto } from '../dtos/session/movie-sessions.dto';
 import { SessionSeatMapDto } from '../dtos/session/session-seat-map.dto';
 import { BookSeatsDto } from '../dtos/session/book-seats.dto';
-import { GetMovieSessionsUseCase } from '../../application/use-cases/catalog/get-movie-sessions.use-case.';
+import { GetMovieSessionsUseCase } from '../../application/use-cases/catalog/get-movie-sessions.use-case';
 import { GetSessionSeatMapUseCase } from '../../application/use-cases/catalog/get-session-seat-map.use-case';
 import { BookSeatsUseCase } from '../../application/use-cases/booking/book-seats.use-case';
 

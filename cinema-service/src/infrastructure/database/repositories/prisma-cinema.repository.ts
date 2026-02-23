@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ICinemaRepository } from '../../../domain/repositories/cinema.repository';
 import { PrismaService } from '../../../prisma.service';
-import { Cinema } from 'src/domain/entities/cinema.entity';
+import { Cinema } from '../../../domain/entities/cinema.entity';
 import { CinemaMapper } from '../prisma/mappers/cinema.mapper';
 
 @Injectable()

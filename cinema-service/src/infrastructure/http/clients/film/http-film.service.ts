@@ -23,7 +23,7 @@ export class HttpFilmService extends IFilmService {
             const { data } = await firstValueFrom(
                 this.httpService.get<OmdbMovie>(`/movie/id/${filmId}`, {
                     headers: {
-                        'X-Internal-Api-Key':
+                        'x-api-key':
                             process.env.INTERNAL_API_KEY ?? '',
                     },
                 }),

@@ -34,7 +34,7 @@ export class Session {
     }
 
     get endTime(): Date {
-        return this._startTime;
+        return this._endTime;
     }
 
     get seatOccupations(): SeatOccupation[] {
