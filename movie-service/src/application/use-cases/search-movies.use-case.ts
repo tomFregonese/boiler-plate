@@ -122,17 +122,17 @@ export class SearchMoviesUseCase {
   private needsDetailsForFilters(query: SearchMovieQuery): boolean {
     return Boolean(
       query.genre ||
-        query.releasedFrom ||
-        query.releasedTo ||
-        query.releasedOn ||
-        query.minImdbRating ||
-        query.maxImdbRating ||
-        query.minRuntime ||
-        query.maxRuntime ||
-        query.director ||
-        query.actor ||
-        query.language ||
-        query.country,
+      query.releasedFrom ||
+      query.releasedTo ||
+      query.releasedOn ||
+      query.minImdbRating ||
+      query.maxImdbRating ||
+      query.minRuntime ||
+      query.maxRuntime ||
+      query.director ||
+      query.actor ||
+      query.language ||
+      query.country,
     );
   }
 

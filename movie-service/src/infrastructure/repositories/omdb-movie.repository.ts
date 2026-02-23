@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import type { OmdbMovie, OmdbSearchResponse } from '../../domain/entities/movie.entity';
+import type {
+  OmdbMovie,
+  OmdbSearchResponse,
+} from '../../domain/entities/movie.entity';
 import type { MovieRepository } from '../../domain/repositories/movie.repository';
 import { OmdbClient } from '../http/omdb.client';
 
