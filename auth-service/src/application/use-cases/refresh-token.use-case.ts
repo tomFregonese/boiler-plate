@@ -1,10 +1,8 @@
 import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user-repository.interface';
-import type { IPasswordHasher } from '../../domain/adapters/password-hasher.interface';
 import type { ITokenService } from '../../domain/adapters/token-service.interface';
 import type { IRefreshTokenRepository } from '../../domain/repositories/refresh-token-repository.interface';
 import { RefreshToken } from '../../domain/entities/refresh-token.entity';
-import { LoginUserDto } from '../dto/login-user.dto';
 
 export interface TokenPairResponse {
   accessToken: string;
@@ -12,22 +10,29 @@ export interface TokenPairResponse {
 }
 
 @Injectable()
-export class LoginUserUseCase {
+export class RefreshTokenUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-    @Inject('IPasswordHasher') private readonly passwordHasher: IPasswordHasher,
     @Inject('ITokenService') private readonly tokenService: ITokenService,
     @Inject('IRefreshTokenRepository') private readonly refreshTokenRepository: IRefreshTokenRepository,
   ) {}
 
-  async execute(dto: LoginUserDto): Promise<TokenPairResponse> {
-    const user = await this.userRepository.findByLogin(dto.login);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+  async execute(rawRefreshToken: string): Promise<TokenPairResponse> {
+    const existing = await this.refreshTokenRepository.findByToken(rawRefreshToken);
+    if (!existing) throw new UnauthorizedException('Invalid refresh token');
+
+    if (existing.isExpired()) {
+      await this.refreshTokenRepository.deleteByToken(rawRefreshToken);
+      throw new UnauthorizedException('Refresh token expired');
+    }
+
+    const user = await this.userRepository.findById(existing.userId);
+    if (!user) throw new UnauthorizedException('User not found');
 
     if (user.status !== 'open') throw new UnauthorizedException('Account is not active');
 
-    const isPasswordValid = await this.passwordHasher.compare(dto.password, user.password);
-    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
+    // Rotate refresh token
+    await this.refreshTokenRepository.deleteByToken(rawRefreshToken);
 
     const accessToken = this.tokenService.generateAccessToken({
       uid: user.id,
@@ -35,15 +40,14 @@ export class LoginUserUseCase {
       roles: user.roles,
     });
 
-    const rawRefreshToken = this.tokenService.generateRefreshToken();
+    const newRawRefreshToken = this.tokenService.generateRefreshToken();
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30); // 30 days
+    expiresAt.setDate(expiresAt.getDate() + 30);
 
-    const refreshTokenEntity = RefreshToken.create(rawRefreshToken, user.id, expiresAt);
-    await this.refreshTokenRepository.save(refreshTokenEntity);
+    const newRefreshToken = RefreshToken.create(newRawRefreshToken, user.id, expiresAt);
+    await this.refreshTokenRepository.save(newRefreshToken);
 
-    return { accessToken, refreshToken: rawRefreshToken };
+    return { accessToken, refreshToken: newRawRefreshToken };
   }
 }
-
 

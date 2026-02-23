@@ -10,9 +10,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   constructor(configService: ConfigService) {
     const databaseUrl = configService.get<string>('DATABASE_URL');
-    if (!databaseUrl) {
-      throw new Error('DATABASE_URL environment variable is not defined. Please set it in your .env file.');
-    }
     const pool = new Pool({ connectionString: databaseUrl, });
     const adapter = new PrismaPg(pool);
     super({ adapter, log: ['error', 'warn'], });
