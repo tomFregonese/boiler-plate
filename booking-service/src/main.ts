@@ -16,11 +16,11 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   const port = process.env.PORT ?? 3004;
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
-  console.log(`Swagger API docs available at: http://localhost:${port}/api`);
+  console.log(`Booking service is running on: http://localhost:${port}`);
+  console.log(`Swagger API docs available at: http://localhost:${port}/docs`);
 }
 bootstrap();
