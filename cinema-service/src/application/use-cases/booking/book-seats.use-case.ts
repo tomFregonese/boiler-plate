@@ -1,9 +1,9 @@
-import {BadRequestException, Inject, Injectable} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ISessionRepository } from '../../../domain/repositories/session.repository';
 import { SessionNotFoundException } from '../../../domain/exceptions/session-not-found.exception';
 import { SeatsAlreadyOccupiedException } from '../../../domain/exceptions/seats-already-occupied.exception';
 import { SESSION_REPOSITORY } from '../../../infrastructure/token';
-import {SeatsNotFoundException} from "../../../domain/exceptions/seats-not-found.exception";
+import { SeatsNotFoundException } from '../../../domain/exceptions/seats-not-found.exception';
 
 @Injectable()
 export class BookSeatsUseCase {
@@ -21,9 +21,13 @@ export class BookSeatsUseCase {
         if (!session) {
             throw new SessionNotFoundException(sessionId);
         }
+
         const existingSeats = session.seatOccupations
             .filter((o) => seatIds.includes(o.seatId))
             .map((o) => o.seatId);
+
+        console.log('existingSeats :');
+        console.log(existingSeats);
 
         if (existingSeats.length !== seatIds.length) {
             throw new SeatsNotFoundException(session.roomId);

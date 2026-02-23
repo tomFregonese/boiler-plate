@@ -18,7 +18,6 @@ export abstract class BaseHttpAdapter {
     const headers = this.extractHeaders(req);
     const hasBody = ['POST', 'PUT', 'PATCH'].includes(req.method);
 
-    console.log(req.user)
     if (hasBody) {
       headers['content-type'] = 'application/json';
     }
