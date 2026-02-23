@@ -33,9 +33,9 @@ async function bootstrap() {
     const port = process.env.PORT || 3003;
     await app.listen(port);
 
-    console.log(`API Gateway running on http://localhost:${port}`);
+    console.log(`Cinema Service running on http://localhost:${port}`);
     console.log(
-        `Swagger documentation available at http://localhost:${port}/api/docs`,
+        `Swagger documentation available at http://localhost:${port}/api`,
     );
 }
 bootstrap();
