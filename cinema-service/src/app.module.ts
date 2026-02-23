@@ -6,7 +6,7 @@ import { SessionController } from './presentation/controllers/session.controller
 import { AdminController } from './presentation/controllers/admin.controller';
 import { ListCinemasUseCase } from './application/use-cases/catalog/list-cinemas.use-case';
 import { GetCinemaCatalogUseCase } from './application/use-cases/catalog/get-cinema-catalog.use-case';
-import { GetMovieSessionsUseCase } from './application/use-cases/catalog/get-movie-sessions.use-case.';
+import { GetMovieSessionsUseCase } from './application/use-cases/catalog/get-movie-sessions.use-case';
 import { GetSessionSeatMapUseCase } from './application/use-cases/catalog/get-session-seat-map.use-case';
 import { BookSeatsUseCase } from './application/use-cases/booking/book-seats.use-case';
 import { CheckRoomAvailabilityUseCase } from './application/use-cases/admin/check-room-availability.use-case';
