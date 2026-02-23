@@ -7,12 +7,14 @@ import { ConfirmBookingUseCase } from './application/use-cases/confirm-booking.u
 import { CancelBookingUseCase } from './application/use-cases/cancel-booking.usecase'
 import { GetBookingUseCase } from './application/use-cases/get-booking.usecase'
 import { BookingController } from './presentation/controllers/booking.controller'
+import { CinemaServiceClient } from './infrastructure/http/cinema-service.client'
 
 @Module({
   imports: [PrismaModule],
   controllers: [BookingController],
   providers: [
     { provide: BOOKING_REPOSITORY, useClass: BookingPrismaRepository },
+    CinemaServiceClient,
     CreateBookingUseCase,
     ConfirmBookingUseCase,
     CancelBookingUseCase,

@@ -2,6 +2,7 @@ import {
     Controller,
     Get,
     Post,
+    Delete,
     Param,
     Body,
     Headers as HeadersDecorator,
@@ -17,9 +18,11 @@ import {
 import { MovieSessionsDto } from '../dtos/session/movie-sessions.dto';
 import { SessionSeatMapDto } from '../dtos/session/session-seat-map.dto';
 import { BookSeatsDto } from '../dtos/session/book-seats.dto';
+import { ReleaseSeatsDto } from '../dtos/session/release-seats.dto';
 import { GetMovieSessionsUseCase } from '../../application/use-cases/catalog/get-movie-sessions.use-case';
 import { GetSessionSeatMapUseCase } from '../../application/use-cases/catalog/get-session-seat-map.use-case';
 import { BookSeatsUseCase } from '../../application/use-cases/booking/book-seats.use-case';
+import { ReleaseSeatsUseCase } from '../../application/use-cases/booking/release-seats.use-case';
 
 @ApiTags('sessions')
 @ApiSecurity('x-api-key')
@@ -29,6 +32,7 @@ export class SessionController {
         private readonly getMovieSessionsUseCase: GetMovieSessionsUseCase,
         private readonly getSessionSeatMapUseCase: GetSessionSeatMapUseCase,
         private readonly bookSeatsUseCase: BookSeatsUseCase,
+        private readonly releaseSeatsUseCase: ReleaseSeatsUseCase,
     ) {}
 
     @ApiOperation({
@@ -120,6 +124,25 @@ export class SessionController {
             sessionId,
             bookSeatsDto.seatIds,
             userId,
+        );
+    }
+
+    @ApiOperation({ summary: 'Release seats for a session (used by booking service on cancellation)' })
+    @ApiParam({ name: 'id', description: 'Unique identifier of the session' })
+    @ApiResponse({ status: 200, description: 'Seats released successfully' })
+    @ApiResponse({
+        status: 400,
+        description: 'Invalid request or seats not found',
+    })
+    @ApiResponse({ status: 404, description: 'Session not found' })
+    @Post('sessions/:id/release')
+    async releaseSeats(
+        @Param('id') sessionId: string,
+        @Body() releaseSeatsDto: ReleaseSeatsDto,
+    ): Promise<void> {
+        await this.releaseSeatsUseCase.execute(
+            sessionId,
+            releaseSeatsDto.seatIds,
         );
     }
 }

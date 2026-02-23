@@ -9,6 +9,7 @@ import { GetCinemaCatalogUseCase } from './application/use-cases/catalog/get-cin
 import { GetMovieSessionsUseCase } from './application/use-cases/catalog/get-movie-sessions.use-case';
 import { GetSessionSeatMapUseCase } from './application/use-cases/catalog/get-session-seat-map.use-case';
 import { BookSeatsUseCase } from './application/use-cases/booking/book-seats.use-case';
+import { ReleaseSeatsUseCase } from './application/use-cases/booking/release-seats.use-case';
 import { CheckRoomAvailabilityUseCase } from './application/use-cases/admin/check-room-availability.use-case';
 import { CreateSessionUseCase } from './application/use-cases/admin/create-session.use-case';
 import {
@@ -50,6 +51,7 @@ import { HttpModule } from '@nestjs/axios';
         GetMovieSessionsUseCase,
         GetSessionSeatMapUseCase,
         BookSeatsUseCase,
+        ReleaseSeatsUseCase,
         CheckRoomAvailabilityUseCase,
         CreateSessionUseCase,
 
