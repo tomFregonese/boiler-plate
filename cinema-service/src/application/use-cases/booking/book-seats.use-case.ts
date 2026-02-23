@@ -21,11 +21,6 @@ export class BookSeatsUseCase {
         if (!session) {
             throw new SessionNotFoundException(sessionId);
         }
-        console.log(`Seats occupations : `);
-        session.seatOccupations.map((seatOccupation) =>
-            console.log(seatOccupation),
-        );
-
         const existingSeats = session.seatOccupations
             .filter((o) => seatIds.includes(o.seatId))
             .map((o) => o.seatId);
@@ -37,9 +32,6 @@ export class BookSeatsUseCase {
         const occupiedSeats = session.seatOccupations
             .filter((o) => existingSeats.includes(o.seatId) && !o.isFree())
             .map((o) => o.seatId);
-
-        console.log(`occupiedSeats : `);
-        console.log(occupiedSeats);
 
         if (occupiedSeats.length > 0) {
             throw new SeatsAlreadyOccupiedException(occupiedSeats);
