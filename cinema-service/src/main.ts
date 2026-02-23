@@ -28,14 +28,14 @@ async function bootstrap() {
         .build();
 
     const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, documentFactory);
+    SwaggerModule.setup('docs', app, documentFactory);
 
     const port = process.env.PORT || 3003;
     await app.listen(port);
 
     console.log(`Cinema Service running on http://localhost:${port}`);
     console.log(
-        `Swagger documentation available at http://localhost:${port}/api`,
+        `Swagger documentation available at http://localhost:${port}/docs`,
     );
 }
 bootstrap();

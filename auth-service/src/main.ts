@@ -33,7 +33,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {
+  SwaggerModule.setup('docs', app, document, {
     customSiteTitle: 'Tchicket Auth API',
     customCss: '.swagger-ui .topbar { display: none }',
     swaggerOptions: {
@@ -46,6 +46,6 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3001;
   await app.listen(port);
   console.log(`Server running on: http://localhost:${port}`);
-  console.log(`Swagger documentation available at: http://localhost:${port}/api`);
+  console.log(`Swagger documentation available at: http://localhost:${port}/docs`);
 }
 bootstrap();
