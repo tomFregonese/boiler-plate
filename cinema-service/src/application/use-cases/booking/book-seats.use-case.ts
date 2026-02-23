@@ -30,7 +30,7 @@ export class BookSeatsUseCase {
             .filter((o) => seatIds.includes(o.seatId))
             .map((o) => o.seatId);
 
-        if (existingSeats.length < 0) {
+        if (existingSeats.length !== seatIds.length) {
             throw new SeatsNotFoundException(session.roomId);
         }
 
