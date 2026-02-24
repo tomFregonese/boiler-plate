@@ -70,7 +70,7 @@ export class Session {
 
     releaseSeats(seatIds: string[]): void {
         this._seatOccupations = this._seatOccupations.map((occupation) => {
-            if (seatIds.includes(occupation.seatId)) {
+            if (seatIds.includes(occupation.seatId) && occupation.status === OccupationStatus.OCCUPIED) {
                 return new SeatOccupation(
                     occupation.sessionId,
                     occupation.seatId,
