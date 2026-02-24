@@ -59,6 +59,7 @@ export class BookingController {
     try {
       return await this.createBooking.execute({
         userId,
+        // DTO uses cinema-service terminology: `sessionId` corresponds to booking-service `screeningId`
         screeningId: dto.sessionId,
         seatIds: dto.seatIds,
         payment: dto.payment,
