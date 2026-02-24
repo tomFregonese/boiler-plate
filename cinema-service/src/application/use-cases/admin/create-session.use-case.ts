@@ -11,10 +11,13 @@ import { RoomNotFoundException } from '../../../domain/exceptions/room-not-found
 import { SessionConflictException } from '../../../domain/exceptions/session-conflict.exception';
 import { UnauthorizedCinemaAccessException } from '../../../domain/exceptions/unauthorized-cinema-access.exception';
 import {
+    FILM_SERVICE,
     ROOM_REPOSITORY,
     SEAT_REPOSITORY,
     SESSION_REPOSITORY,
 } from '../../../infrastructure/token';
+import { IFilmService } from '../../ports/film-service.port';
+import { FilmNotFoundException } from '../../../domain/exceptions/film-not-found.exception';
 
 @Injectable()
 export class CreateSessionUseCase {
@@ -25,6 +28,8 @@ export class CreateSessionUseCase {
         private readonly sessionRepository: ISessionRepository,
         @Inject(SEAT_REPOSITORY)
         private readonly seatRepository: ISeatRepository,
+        @Inject(FILM_SERVICE)
+        private readonly filmService: IFilmService,
     ) {}
 
     async execute(
@@ -45,6 +50,12 @@ export class CreateSessionUseCase {
 
         if (startTime >= endTime) {
             throw new Error('Start time must be before end time');
+        }
+
+        const film = await this.filmService.getFilmById(filmId);
+
+        if (!film) {
+            throw new FilmNotFoundException(filmId);
         }
 
         const existingSessions =

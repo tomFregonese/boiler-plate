@@ -23,8 +23,7 @@ export class HttpFilmService extends IFilmService {
             const { data } = await firstValueFrom(
                 this.httpService.get<OmdbMovie>(`/movie/id/${filmId}`, {
                     headers: {
-                        'x-api-key':
-                            process.env.INTERNAL_API_KEY ?? '',
+                        'x-api-key': process.env.INTERNAL_API_KEY ?? '',
                     },
                 }),
             );
@@ -40,7 +39,9 @@ export class HttpFilmService extends IFilmService {
             }
 
             const axiosError = error as AxiosError;
-            if (axiosError.response?.status === 404) {
+
+            const status = (error as AxiosError).response?.status;
+            if ([400, 404].includes(<number>status)) {
                 throw new FilmNotFoundException(filmId);
             }
 

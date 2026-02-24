@@ -102,11 +102,6 @@ export class SessionController {
         description: 'User identifier injected by the gateway',
         required: true,
     })
-/*    @ApiHeader({
-        name: 'X-User-Role',
-        description: 'User role injected by the gateway',
-        required: true,
-    })*/
     @ApiResponse({ status: 200, description: 'Seats booked successfully' })
     @ApiResponse({
         status: 400,

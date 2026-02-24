@@ -14,7 +14,8 @@ import { SessionConflictException } from '../../domain/exceptions/session-confli
 import { SeatsAlreadyOccupiedException } from '../../domain/exceptions/seats-already-occupied.exception';
 import { RoomNotFoundException } from '../../domain/exceptions/room-not-found.exception';
 import { CinemaNotFoundException } from '../../domain/exceptions/cinema-not-found.exception';
-import {FilmNotFoundException} from "../../domain/exceptions/film-not-found.exception";
+import { FilmNotFoundException } from '../../domain/exceptions/film-not-found.exception';
+import {SeatsNotFoundException} from "../../domain/exceptions/seats-not-found.exception";
 
 @Catch()
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -93,6 +94,13 @@ export class DomainExceptionFilter implements ExceptionFilter {
             return {
                 status: HttpStatus.CONFLICT,
                 message: 'One or more seats are already occupied',
+            };
+        }
+
+        if (exception instanceof SeatsNotFoundException) {
+            return {
+                status: HttpStatus.NOT_FOUND,
+                message: 'One or more seats cannot be found on this room',
             };
         }
 
