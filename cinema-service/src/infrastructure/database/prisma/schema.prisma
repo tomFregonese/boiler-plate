@@ -8,14 +8,15 @@ datasource db {
 }
 
 model Cinema {
-  id         String   @id @default(uuid())
-  name       String
-  address    String
-  city       String
-  postalCode String
-  rooms      Room[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  city        String
+  postalCode  String
+  rooms       Room[]
+  ticketPrice Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("cinemas")
 }

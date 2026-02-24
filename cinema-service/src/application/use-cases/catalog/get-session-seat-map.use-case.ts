@@ -4,14 +4,17 @@ import { ISeatRepository } from '../../../domain/repositories/seat.repository';
 import { FilmInfo, IFilmService } from '../../ports/film-service.port';
 import { SessionNotFoundException } from '../../../domain/exceptions/session-not-found.exception';
 import {
+    CINEMA_REPOSITORY,
     FILM_SERVICE,
     SEAT_REPOSITORY,
     SESSION_REPOSITORY,
 } from '../../../infrastructure/token';
+import { ICinemaRepository } from '../../../domain/repositories/cinema.repository';
 
 export interface SessionSeatMapResult {
     sessionId: string;
     film: FilmInfo;
+    ticketPrice: number;
     rows: Array<{
         rowName: string;
         seats: Array<{
@@ -31,6 +34,8 @@ export class GetSessionSeatMapUseCase {
         private readonly seatRepository: ISeatRepository,
         @Inject(FILM_SERVICE)
         private readonly filmService: IFilmService,
+        @Inject(CINEMA_REPOSITORY)
+        private readonly cinemaRepository: ICinemaRepository,
     ) {}
 
     async execute(sessionId: string): Promise<SessionSeatMapResult> {
@@ -39,8 +44,11 @@ export class GetSessionSeatMapUseCase {
             throw new SessionNotFoundException(sessionId);
         }
 
-        const seats = await this.seatRepository.findByRoomId(session.roomId);
-        const film = await this.filmService.getFilmById(session.filmId);
+        const [seats, film, cinema] = await Promise.all([
+            this.seatRepository.findByRoomId(session.roomId),
+            this.filmService.getFilmById(session.filmId),
+            this.cinemaRepository.findById(session.cinemaId),
+        ]);
 
         const rowsMap = new Map<string, typeof seats>();
 
@@ -71,6 +79,7 @@ export class GetSessionSeatMapUseCase {
         return {
             sessionId: session.id,
             film,
+            ticketPrice: cinema?.ticketPrice ?? 0,
             rows,
         };
     }

@@ -9,6 +9,8 @@ export class CinemaMapper {
             prisma.address,
             prisma.city,
             prisma.postalCode,
+            [],
+            prisma.ticketPrice,
         );
     }
 }

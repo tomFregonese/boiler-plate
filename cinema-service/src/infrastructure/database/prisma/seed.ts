@@ -32,6 +32,7 @@ const CINEMAS = [
         city: 'Paris',
         postalCode: '75012',
         rooms: 4,
+        ticketPrice: 13.9,
     },
     {
         name: 'UGC Confluence',
@@ -39,6 +40,7 @@ const CINEMAS = [
         city: 'Lyon',
         postalCode: '69002',
         rooms: 3,
+        ticketPrice: 12.5,
     },
     {
         name: 'Gaumont Prado',
@@ -46,6 +48,7 @@ const CINEMAS = [
         city: 'Marseille',
         postalCode: '13006',
         rooms: 3,
+        ticketPrice: 12.1,
     },
     {
         name: 'CGR Bordeaux',
@@ -53,6 +56,7 @@ const CINEMAS = [
         city: 'Bordeaux',
         postalCode: '33000',
         rooms: 4,
+        ticketPrice: 11.5,
     },
     {
         name: 'Kinepolis Lomme',
@@ -60,6 +64,7 @@ const CINEMAS = [
         city: 'Lille',
         postalCode: '59160',
         rooms: 3,
+        ticketPrice: 11.9,
     },
 ];
 

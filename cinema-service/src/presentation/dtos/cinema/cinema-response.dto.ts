@@ -30,4 +30,10 @@ export class CinemaResponseDto {
         example: '75001',
     })
     postalCode: string;
+
+    @ApiProperty({
+        description: 'Ticket price in euros',
+        example: 12.5,
+    })
+    ticketPrice: number;
 }

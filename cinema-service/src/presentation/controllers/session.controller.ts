@@ -59,6 +59,7 @@ export class SessionController {
             providers: result.providers.map((provider) => ({
                 cinemaId: provider.cinemaId,
                 cinemaName: provider.cinemaName,
+                ticketPrice: provider.ticketPrice,
                 sessions: provider.sessions.map((session) => ({
                     sessionId: session.sessionId,
                     startTime: session.startTime.toISOString(),
@@ -84,6 +85,7 @@ export class SessionController {
         return {
             sessionId: result.sessionId,
             film: result.film,
+            ticketPrice: result.ticketPrice,
             rows: result.rows.map((row) => ({
                 rowName: row.rowName,
                 seats: row.seats.map((seat) => ({
@@ -122,7 +124,10 @@ export class SessionController {
         );
     }
 
-    @ApiOperation({ summary: 'Release seats for a session (used by booking service on cancellation)' })
+    @ApiOperation({
+        summary:
+            'Release seats for a session (used by booking service on cancellation)',
+    })
     @ApiParam({ name: 'id', description: 'Unique identifier of the session' })
     @ApiResponse({ status: 200, description: 'Seats released successfully' })
     @ApiResponse({

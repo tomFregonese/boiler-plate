@@ -6,6 +6,7 @@ export class Cinema {
         private readonly _city: string,
         private readonly _postalCode: string,
         private readonly _rooms: string[] = [],
+        private readonly _ticketPrice: number = 0,
     ) {}
 
     get id(): string {
@@ -26,6 +27,10 @@ export class Cinema {
 
     get postalCode(): string {
         return this._postalCode;
+    }
+
+    get ticketPrice(): number {
+        return this._ticketPrice;
     }
 
     get rooms(): string[] {
