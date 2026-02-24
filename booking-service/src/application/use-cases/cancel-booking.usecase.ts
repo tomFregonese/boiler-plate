@@ -40,7 +40,10 @@ export class CancelBookingUseCase {
       this.logger.log(`Released seats in cinema service for booking ${bookingId}`);
     } catch (error) {
       this.logger.error(`Failed to release seats in cinema service: ${error instanceof Error ? error.message : error}`);
-      // The booking is already cancelled in our database, so we log but don't rollback
+      // The booking is already cancelled in our database, but we must surface this partial failure
+      throw new Error(
+        'Failed to release seats in cinema service. Booking was cancelled in local database, but seats may still be reserved.',
+      );
     }
 
     this.logger.log(`Successfully cancelled booking ${bookingId}`);
