@@ -46,6 +46,21 @@ export class CinemasController {
     return this.cinemas.forward(req, res, `/cinemas/${id}/catalog`);
   }
 
+  @Get(':id/rooms')
+  @ApiOperation({ summary: 'Get rooms for a specific cinema' })
+  @ApiParam({ name: 'id', description: 'Unique identifier of the cinema' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of rooms retrieved successfully',
+  })
+  getCinemaRooms(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.cinemas.forward(req, res, `/cinemas/${id}/rooms`);
+  }
+
   @Get('movies/:filmId/sessions')
   @ApiOperation({
     summary: 'Get all sessions for a specific film across all cinemas',

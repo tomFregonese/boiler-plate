@@ -36,7 +36,7 @@ export class CancelBookingUseCase {
     // Release seats in cinema service
     try {
       const seatIds = booking.seats.map(s => s.seatId);
-      await this.cinemaServiceClient.releaseSeats(booking.screeningId, seatIds);
+      await this.cinemaServiceClient.releaseSeats(booking.sessionId, seatIds);
       this.logger.log(`Released seats in cinema service for booking ${bookingId}`);
     } catch (error) {
       this.logger.error(`Failed to release seats in cinema service: ${error instanceof Error ? error.message : error}`);

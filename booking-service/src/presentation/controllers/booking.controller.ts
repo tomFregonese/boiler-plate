@@ -25,13 +25,14 @@ import { CreateBookingUseCase } from '../../application/use-cases/create-booking
 import { ConfirmBookingUseCase } from '../../application/use-cases/confirm-booking.usecase'
 import { CancelBookingUseCase } from '../../application/use-cases/cancel-booking.usecase'
 import { GetBookingUseCase } from '../../application/use-cases/get-booking.usecase'
+import { GetUserBookingsUseCase } from '../../application/use-cases/get-user-bookings.usecase'
 import { CreateBookingDto } from '../dtos/create-booking.dto'
 import { BookingResponseDto } from '../dtos/booking-response.dto'
 import { SeatAlreadyBookedError } from '../../domain/errors/SeatAlreadyBookedError'
 import { BookingNotFoundError } from '../../domain/errors/BookingNotFoundError'
 
 @ApiTags('Bookings')
-@ApiHeader({ name: 'x-api-key', description: 'Clé API interne (injectée par la gateway)', required: true })
+@ApiHeader({ name: 'x-api-key', description: 'Internal API key (injected by the gateway)', required: true })
 @Controller('bookings')
 export class BookingController {
   constructor(
@@ -39,15 +40,27 @@ export class BookingController {
     private readonly confirmBooking: ConfirmBookingUseCase,
     private readonly cancelBooking: CancelBookingUseCase,
     private readonly getBooking: GetBookingUseCase,
+    private readonly getUserBookings: GetUserBookingsUseCase,
   ) {}
 
+  @Get()
+  @ApiOperation({ summary: 'List bookings for the current user' })
+  @ApiHeader({ name: 'x-user-id', description: 'User identifier (injected by the gateway)', required: true })
+  @ApiOkResponse({ description: 'List of bookings', type: [BookingResponseDto] })
+  async findByUser(@Headers('x-user-id') userId: string) {
+    if (!userId) {
+      throw new BadRequestException('Missing x-user-id header')
+    }
+    return this.getUserBookings.execute(userId)
+  }
+
   @Post()
-  @ApiOperation({ summary: 'Créer une réservation' })
-  @ApiHeader({ name: 'x-user-id', description: 'Identifiant utilisateur (injecté par la gateway)', required: true })
+  @ApiOperation({ summary: 'Create a booking' })
+  @ApiHeader({ name: 'x-user-id', description: 'User identifier (injected by the gateway)', required: true })
   @ApiBody({ type: CreateBookingDto })
-  @ApiCreatedResponse({ description: 'Réservation créée avec succès', type: BookingResponseDto })
-  @ApiConflictResponse({ description: 'Siège déjà réservé pour cette session' })
-  @ApiBadRequestResponse({ description: 'Sièges indisponibles ou session introuvable' })
+  @ApiCreatedResponse({ description: 'Booking created successfully', type: BookingResponseDto })
+  @ApiConflictResponse({ description: 'Seat already booked for this session' })
+  @ApiBadRequestResponse({ description: 'Seats unavailable or session not found' })
   async create(
     @Body() dto: CreateBookingDto,
     @Headers('x-user-id') userId: string,
@@ -59,8 +72,7 @@ export class BookingController {
     try {
       return await this.createBooking.execute({
         userId,
-        // DTO uses cinema-service terminology: `sessionId` corresponds to booking-service `screeningId`
-        screeningId: dto.sessionId,
+        sessionId: dto.sessionId,
         seatIds: dto.seatIds,
         payment: dto.payment,
       })
@@ -73,10 +85,10 @@ export class BookingController {
   }
 
   @Post(':id/confirm')
-  @ApiOperation({ summary: 'Confirmer une réservation' })
-  @ApiParam({ name: 'id', description: 'UUID du booking', example: 'b1234-5678-abcd' })
-  @ApiOkResponse({ description: 'Réservation confirmée', type: BookingResponseDto })
-  @ApiNotFoundResponse({ description: 'Réservation introuvable' })
+  @ApiOperation({ summary: 'Confirm a booking' })
+  @ApiParam({ name: 'id', description: 'Booking UUID', example: 'b1234-5678-abcd' })
+  @ApiOkResponse({ description: 'Booking confirmed', type: BookingResponseDto })
+  @ApiNotFoundResponse({ description: 'Booking not found' })
   async confirm(@Param('id') id: string) {
     try {
       return await this.confirmBooking.execute(id)
@@ -89,10 +101,10 @@ export class BookingController {
   }
 
   @Post(':id/cancel')
-  @ApiOperation({ summary: 'Annuler une réservation (libère les sièges dans le cinema-service)' })
-  @ApiParam({ name: 'id', description: 'UUID du booking', example: 'b1234-5678-abcd' })
-  @ApiOkResponse({ description: 'Réservation annulée et sièges libérés', type: BookingResponseDto })
-  @ApiNotFoundResponse({ description: 'Réservation introuvable' })
+  @ApiOperation({ summary: 'Cancel a booking (releases seats in the cinema-service)' })
+  @ApiParam({ name: 'id', description: 'Booking UUID', example: 'b1234-5678-abcd' })
+  @ApiOkResponse({ description: 'Booking cancelled and seats released', type: BookingResponseDto })
+  @ApiNotFoundResponse({ description: 'Booking not found' })
   async cancel(@Param('id') id: string) {
     try {
       return await this.cancelBooking.execute(id)
@@ -105,10 +117,10 @@ export class BookingController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Récupérer une réservation par id' })
-  @ApiParam({ name: 'id', description: 'UUID du booking', example: 'b1234-5678-abcd' })
-  @ApiOkResponse({ description: 'Réservation trouvée', type: BookingResponseDto })
-  @ApiNotFoundResponse({ description: 'Réservation introuvable' })
+  @ApiOperation({ summary: 'Retrieve a booking by ID' })
+  @ApiParam({ name: 'id', description: 'Booking UUID', example: 'b1234-5678-abcd' })
+  @ApiOkResponse({ description: 'Booking found', type: BookingResponseDto })
+  @ApiNotFoundResponse({ description: 'Booking not found' })
   async getById(@Param('id') id: string) {
     try {
       return await this.getBooking.execute(id)

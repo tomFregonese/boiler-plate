@@ -22,39 +22,46 @@ import { BookingResponseDto } from './dtos/booking-response.dto.js';
 export class BookingController {
     constructor(private readonly bookings: BookingAdapter) {}
 
+    @Get()
+    @ApiOperation({ summary: 'List the current user\'s bookings' })
+    @ApiOkResponse({ description: 'List of bookings', type: [BookingResponseDto] })
+    findAll(@Req() req: Request, @Res() res: Response) {
+        return this.bookings.forward(req, res, '/bookings');
+    }
+
     @Post()
-    @ApiOperation({ summary: 'Créer une réservation' })
+    @ApiOperation({ summary: 'Create a booking' })
     @ApiBody({ type: CreateBookingDto })
-    @ApiCreatedResponse({ description: 'Réservation créée avec succès', type: BookingResponseDto })
-    @ApiConflictResponse({ description: 'Siège déjà réservé pour cette session' })
-    @ApiBadRequestResponse({ description: 'Sièges indisponibles ou session introuvable' })
+    @ApiCreatedResponse({ description: 'Booking created successfully', type: BookingResponseDto })
+    @ApiConflictResponse({ description: 'Seat already booked for this session' })
+    @ApiBadRequestResponse({ description: 'Seats unavailable or session not found' })
     create(@Body() _body: CreateBookingDto, @Req() req: Request, @Res() res: Response) {
         return this.bookings.forward(req, res, '/bookings');
     }
 
     @Post(':id/confirm')
-    @ApiOperation({ summary: 'Confirmer une réservation' })
-    @ApiParam({ name: 'id', description: 'UUID du booking', example: 'b1234-5678-abcd' })
-    @ApiOkResponse({ description: 'Réservation confirmée', type: BookingResponseDto })
-    @ApiNotFoundResponse({ description: 'Réservation introuvable' })
+    @ApiOperation({ summary: 'Confirm a booking' })
+    @ApiParam({ name: 'id', description: 'Booking UUID', example: 'b1234-5678-abcd' })
+    @ApiOkResponse({ description: 'Booking confirmed', type: BookingResponseDto })
+    @ApiNotFoundResponse({ description: 'Booking not found' })
     confirm(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
         return this.bookings.forward(req, res, `/bookings/${id}/confirm`);
     }
 
     @Post(':id/cancel')
-    @ApiOperation({ summary: 'Annuler une réservation (libère les sièges)' })
-    @ApiParam({ name: 'id', description: 'UUID du booking', example: 'b1234-5678-abcd' })
-    @ApiOkResponse({ description: 'Réservation annulée et sièges libérés', type: BookingResponseDto })
-    @ApiNotFoundResponse({ description: 'Réservation introuvable' })
+    @ApiOperation({ summary: 'Cancel a booking (releases the seats)' })
+    @ApiParam({ name: 'id', description: 'Booking UUID', example: 'b1234-5678-abcd' })
+    @ApiOkResponse({ description: 'Booking cancelled and seats released', type: BookingResponseDto })
+    @ApiNotFoundResponse({ description: 'Booking not found' })
     cancel(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
         return this.bookings.forward(req, res, `/bookings/${id}/cancel`);
     }
 
     @Get(':id')
-    @ApiOperation({ summary: 'Récupérer une réservation par id' })
-    @ApiParam({ name: 'id', description: 'UUID du booking', example: 'b1234-5678-abcd' })
-    @ApiOkResponse({ description: 'Réservation trouvée', type: BookingResponseDto })
-    @ApiNotFoundResponse({ description: 'Réservation introuvable' })
+    @ApiOperation({ summary: 'Get a booking by ID' })
+    @ApiParam({ name: 'id', description: 'Booking UUID', example: 'b1234-5678-abcd' })
+    @ApiOkResponse({ description: 'Booking found', type: BookingResponseDto })
+    @ApiNotFoundResponse({ description: 'Booking not found' })
     getById(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
         return this.bookings.forward(req, res, `/bookings/${id}`);
     }

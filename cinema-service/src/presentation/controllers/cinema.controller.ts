@@ -10,6 +10,7 @@ import { CinemaResponseDto } from '../dtos/cinema/cinema-response.dto';
 import { CinemaCatalogDto } from '../dtos/cinema/cinema-catalog.dto';
 import { GetCinemaCatalogUseCase } from '../../application/use-cases/catalog/get-cinema-catalog.use-case';
 import { ListCinemasUseCase } from '../../application/use-cases/catalog/list-cinemas.use-case';
+import { GetCinemaRoomsUseCase } from '../../application/use-cases/catalog/get-cinema-rooms.use-case';
 
 @ApiTags('cinemas')
 @ApiSecurity('x-api-key')
@@ -18,6 +19,7 @@ export class CinemaController {
     constructor(
         private readonly listCinemasUseCase: ListCinemasUseCase,
         private readonly getCinemaCatalogUseCase: GetCinemaCatalogUseCase,
+        private readonly getCinemaRoomsUseCase: GetCinemaRoomsUseCase,
     ) {}
 
     @ApiOperation({ summary: 'List all cinemas' })
@@ -77,5 +79,22 @@ export class CinemaController {
                 roomName: session.roomName,
             })),
         };
+    }
+
+    @ApiOperation({ summary: 'Get rooms for a specific cinema' })
+    @ApiResponse({
+        status: 200,
+        description: 'List of rooms retrieved successfully',
+    })
+    @Get(':id/rooms')
+    async getCinemaRooms(@Param('id') id: string) {
+        const rooms = await this.getCinemaRoomsUseCase.execute(id);
+
+        return rooms.map((room) => ({
+            id: room.id,
+            name: room.name,
+            cinemaId: room.cinemaId,
+            capacity: room.seats.length,
+        }));
     }
 }

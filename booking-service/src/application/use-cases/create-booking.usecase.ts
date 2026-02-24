@@ -11,7 +11,7 @@ import { CinemaServiceClient } from '../../infrastructure/http/cinema-service.cl
 
 export interface CreateBookingInput {
   userId: string
-  screeningId: string
+  sessionId: string
   seatIds: string[]
   payment?: {
     provider: string
@@ -35,11 +35,11 @@ export class CreateBookingUseCase {
 
     // First, try to book seats in the cinema service
     // This will verify that the session exists and seats are available
-    this.logger.log(`Attempting to book seats in cinema service for session ${input.screeningId}`);
+    this.logger.log(`Attempting to book seats in cinema service for session ${input.sessionId}`);
     
     try {
       await this.cinemaServiceClient.bookSeats(
-        input.screeningId,
+        input.sessionId,
         seatIds,
         input.userId,
       );
@@ -50,13 +50,13 @@ export class CreateBookingUseCase {
 
     // If cinema service booking succeeded, create the booking in our database
     const seats = seatIds.map(
-      (seatId) => new BookingSeat(undefined, undefined, input.screeningId, seatId),
+      (seatId) => new BookingSeat(undefined, undefined, input.sessionId, seatId),
     )
 
     const booking = new Booking(
       undefined,
       input.userId,
-      input.screeningId,
+      input.sessionId,
       BookingStatus.PENDING,
       seats,
     )
@@ -79,23 +79,22 @@ export class CreateBookingUseCase {
       return createdBooking;
     } catch (error) {
       this.logger.error(
-        `Failed to create booking in database for screening ${input.screeningId}. Attempting to release seats in cinema service. Error: ${
+        `Failed to create booking in database for session ${input.sessionId}. Attempting to release seats in cinema service. Error: ${
           error instanceof Error ? error.message : error
         }`,
-      );
+      )
 
       try {
         await this.cinemaServiceClient.releaseSeats(
-          input.screeningId,
+          input.sessionId,
           seatIds,
-          input.userId,
-        );
+        )
         this.logger.log(
-          `Successfully released seats in cinema service for failed booking on screening ${input.screeningId}`,
-        );
+          `Successfully released seats in cinema service for failed booking on session ${input.sessionId}`,
+        )
       } catch (releaseError) {
         this.logger.error(
-          `Failed to release seats in cinema service after booking creation failure for screening ${input.screeningId}: ${
+          `Failed to release seats in cinema service after booking creation failure for session ${input.sessionId}: ${
             releaseError instanceof Error ? releaseError.message : releaseError
           }`,
         );

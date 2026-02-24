@@ -1,16 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 class BookingSeatResponseDto {
-  @ApiProperty({ example: 'clxyz123abc', description: 'Identifiant du seat booking' })
+  @ApiProperty({ example: 'clxyz123abc', description: 'Seat booking identifier' })
   id!: string
 
-  @ApiProperty({ example: 'b1234-5678-abcd', description: 'Identifiant du booking' })
+  @ApiProperty({ example: 'b1234-5678-abcd', description: 'Booking identifier' })
   bookingId!: string
 
-  @ApiProperty({ example: '880e8400-e29b-41d4-a716-446655440000', description: 'Identifiant de la session' })
+  @ApiProperty({ example: '880e8400-e29b-41d4-a716-446655440000', description: 'Session identifier' })
   sessionId!: string
 
-  @ApiProperty({ example: '880e8400-e29b-41d4-a716-446655440010', description: 'Identifiant du siège' })
+  @ApiProperty({ example: '880e8400-e29b-41d4-a716-446655440010', description: 'Seat identifier' })
   seatId!: string
 }
 
@@ -24,7 +24,7 @@ class PaymentResponseDto {
   @ApiProperty({ example: 'stripe' })
   provider!: string
 
-  @ApiProperty({ example: 2400, description: 'Montant en centimes' })
+  @ApiProperty({ example: 2400, description: 'Amount in cents' })
   amount!: number
 
   @ApiProperty({ example: 'EUR' })
@@ -41,22 +41,22 @@ class PaymentResponseDto {
 }
 
 export class BookingResponseDto {
-  @ApiProperty({ example: 'b1234-5678-abcd', description: 'Identifiant du booking' })
+  @ApiProperty({ example: 'b1234-5678-abcd', description: 'Booking identifier' })
   id!: string
 
-  @ApiProperty({ example: 'user_123', description: 'Identifiant utilisateur' })
+  @ApiProperty({ example: 'user_123', description: 'User identifier' })
   userId!: string
 
-  @ApiProperty({ example: '880e8400-e29b-41d4-a716-446655440000', description: 'Identifiant de la session cinema' })
+  @ApiProperty({ example: '880e8400-e29b-41d4-a716-446655440000', description: 'Cinema session identifier' })
   sessionId!: string
 
   @ApiProperty({ enum: ['PENDING', 'CONFIRMED', 'CANCELLED'], example: 'PENDING' })
   status!: string
 
-  @ApiProperty({ type: [BookingSeatResponseDto], description: 'Sièges réservés' })
+  @ApiProperty({ type: [BookingSeatResponseDto], description: 'Booked seats' })
   seats!: BookingSeatResponseDto[]
 
-  @ApiPropertyOptional({ type: PaymentResponseDto, description: 'Paiement associé' })
+  @ApiPropertyOptional({ type: PaymentResponseDto, description: 'Associated payment' })
   payment?: PaymentResponseDto
 
   @ApiProperty({ example: '2026-02-23T14:00:00.000Z' })

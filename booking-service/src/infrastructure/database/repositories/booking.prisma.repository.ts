@@ -18,7 +18,7 @@ export class BookingPrismaRepository implements IBookingRepository {
         const bookingRecord = await tx.booking.create({
           data: {
             userId: booking.userId,
-            screeningId: booking.screeningId,
+            sessionId: booking.sessionId,
             status: booking.status as unknown as PrismaBookingStatus,
           },
         })
@@ -27,7 +27,7 @@ export class BookingPrismaRepository implements IBookingRepository {
           await tx.bookingSeat.createMany({
             data: booking.seats.map((seat) => ({
               bookingId: bookingRecord.id,
-              screeningId: bookingRecord.screeningId,
+              sessionId: bookingRecord.sessionId,
               seatId: seat.seatId,
             })),
           })
@@ -72,6 +72,16 @@ export class BookingPrismaRepository implements IBookingRepository {
     })
 
     return booking ? BookingMapper.toDomain(booking) : null
+  }
+
+  async findByUserId(userId: string): Promise<Booking[]> {
+    const bookings = await this.prisma.booking.findMany({
+      where: { userId },
+      include: { seats: true, payment: true },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    return bookings.map(BookingMapper.toDomain)
   }
 
   async updateStatus(id: string, status: BookingStatus): Promise<Booking | null> {

@@ -6,7 +6,7 @@ export class Booking {
     constructor(
         public readonly id: string | undefined,
         public readonly userId: string,
-        public readonly screeningId: string,
+        public readonly sessionId: string,
         public status: BookingStatus,
         public readonly seats: BookingSeat[],
         public readonly createdAt?: Date,

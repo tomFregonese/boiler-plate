@@ -10,7 +10,7 @@ datasource db {
 model Booking {
   id          String        @id @default(uuid())
   userId      String
-  screeningId String
+  sessionId   String        @map("screeningId")
   status      BookingStatus @default(PENDING)
 
   seats       BookingSeat[]
@@ -20,19 +20,19 @@ model Booking {
 
   payment     Payment?
 
-  @@index([screeningId])
+  @@index([sessionId])
   @@index([userId])
 }
 
 model BookingSeat {
   id        String  @id @default(cuid())
   bookingId String
-  screeningId String
+  sessionId String  @map("screeningId")
   seatId    String
 
   booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
-  @@unique([screeningId, seatId])
+  @@unique([sessionId, seatId])
   @@index([bookingId])
   @@index([seatId])
 }

@@ -21,7 +21,7 @@ export class BookingMapper {
 	): Booking {
 		const seats = booking.seats.map(
 			(seat) =>
-				new BookingSeat(seat.id, seat.bookingId, seat.screeningId, seat.seatId),
+				new BookingSeat(seat.id, seat.bookingId, seat.sessionId, seat.seatId),
 		)
 
 		const payment = booking.payment
@@ -39,7 +39,7 @@ export class BookingMapper {
 		return new Booking(
 			booking.id,
 			booking.userId,
-			booking.screeningId,
+			booking.sessionId,
 			BookingMapper.toDomainBookingStatus(booking.status),
 			seats,
 			booking.createdAt,

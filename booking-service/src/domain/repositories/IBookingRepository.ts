@@ -7,6 +7,7 @@ export const BOOKING_REPOSITORY = 'BOOKING_REPOSITORY'
 export interface IBookingRepository {
 	create(booking: Booking, payment?: Payment): Promise<Booking>
 	findById(id: string): Promise<Booking | null>
+	findByUserId(userId: string): Promise<Booking[]>
 	updateStatus(id: string, status: BookingStatus): Promise<Booking | null>
 	addPayment(bookingId: string, payment: Payment): Promise<Payment>
 }

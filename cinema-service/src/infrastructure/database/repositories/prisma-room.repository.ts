@@ -11,6 +11,7 @@ export class PrismaRoomRepository implements IRoomRepository {
     async findById(id: string): Promise<Room | null> {
         const room = await this.prisma.room.findUnique({
             where: { id },
+            include: { seats: true },
         });
 
         return room ? RoomMapper.toDomain(room) : null;
@@ -19,6 +20,7 @@ export class PrismaRoomRepository implements IRoomRepository {
     async findByCinemaId(cinemaId: string): Promise<Room[]> {
         const rooms = await this.prisma.room.findMany({
             where: { cinemaId },
+            include: { seats: true },
         });
 
         return rooms.map((room) => RoomMapper.toDomain(room));

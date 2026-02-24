@@ -6,6 +6,7 @@ import { CreateBookingUseCase } from './application/use-cases/create-booking.use
 import { ConfirmBookingUseCase } from './application/use-cases/confirm-booking.usecase'
 import { CancelBookingUseCase } from './application/use-cases/cancel-booking.usecase'
 import { GetBookingUseCase } from './application/use-cases/get-booking.usecase'
+import { GetUserBookingsUseCase } from './application/use-cases/get-user-bookings.usecase'
 import { BookingController } from './presentation/controllers/booking.controller'
 import { CinemaServiceClient } from './infrastructure/http/cinema-service.client'
 
@@ -19,6 +20,7 @@ import { CinemaServiceClient } from './infrastructure/http/cinema-service.client
     ConfirmBookingUseCase,
     CancelBookingUseCase,
     GetBookingUseCase,
+    GetUserBookingsUseCase,
   ],
 })
 export class BookingModule {}

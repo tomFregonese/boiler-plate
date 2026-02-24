@@ -9,7 +9,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Booking Service')
     .setDescription(
-      'Microservice de réservation : création, confirmation, annulation, paiement optionnel. IDs échangés entre services en String (UUID/CUID).',
+      'Booking microservice: creation, confirmation, cancellation, optional payment. IDs exchanged between services as String (UUID/CUID).',
     )
     .setVersion('1.0.0')
     .addTag('Bookings')
