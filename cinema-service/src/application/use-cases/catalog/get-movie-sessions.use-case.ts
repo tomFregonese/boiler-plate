@@ -13,6 +13,7 @@ export interface MovieSessionsResult {
     providers: Array<{
         cinemaId: string;
         cinemaName: string;
+        ticketPrice: number;
         sessions: Array<{
             sessionId: string;
             startTime: Date;
@@ -50,6 +51,7 @@ export class GetMovieSessionsUseCase {
             ([cinemaId, cinemaSessions]) => ({
                 cinemaId,
                 cinemaName: cinemaMap.get(cinemaId)?.name ?? '',
+                ticketPrice: cinemaMap.get(cinemaId)?.ticketPrice ?? 0,
                 sessions: cinemaSessions.map((s) => ({
                     sessionId: s.id,
                     startTime: s.startTime,

@@ -40,7 +40,10 @@ export class SessionMapper {
 
     static toPrisma(
         domain: Session,
-    ): Pick<PrismaSession, 'id' | 'filmId' | 'roomId' | 'startTime' | 'endTime'> {
+    ): Pick<
+        PrismaSession,
+        'id' | 'filmId' | 'roomId' | 'startTime' | 'endTime'
+    > {
         return {
             id: domain.id,
             filmId: domain.filmId,

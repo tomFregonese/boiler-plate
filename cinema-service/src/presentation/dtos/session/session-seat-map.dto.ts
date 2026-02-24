@@ -46,6 +46,9 @@ export class SessionSeatMapDto {
     @ApiProperty({ type: FilmInfoDto })
     film: FilmInfoDto;
 
+    @ApiProperty({ description: 'Ticket price in euros', example: 12.5 })
+    ticketPrice: number;
+
     @ApiProperty({
         description: 'List of rows with their seats',
         type: [RowDto],

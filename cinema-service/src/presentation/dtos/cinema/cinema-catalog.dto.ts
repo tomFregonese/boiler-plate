@@ -31,6 +31,9 @@ export class CinemaCatalogDto {
     })
     cinemaName: string;
 
+    @ApiProperty({ description: 'Ticket price in euros', example: 12.5 })
+    ticketPrice: number;
+
     @ApiProperty({
         description: 'List of all sessions scheduled at this cinema',
         type: [CinemaCatalogSessionDto],

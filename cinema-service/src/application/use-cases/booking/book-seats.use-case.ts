@@ -26,9 +26,6 @@ export class BookSeatsUseCase {
             .filter((o) => seatIds.includes(o.seatId))
             .map((o) => o.seatId);
 
-        console.log('existingSeats :');
-        console.log(existingSeats);
-
         if (existingSeats.length !== seatIds.length) {
             throw new SeatsNotFoundException(session.roomId);
         }

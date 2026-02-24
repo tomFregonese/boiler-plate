@@ -11,6 +11,7 @@ import {
 
 export interface CinemaCatalogResult {
     cinemaName: string;
+    ticketPrice: number;
     sessions: Array<{
         sessionId: string;
         film: FilmInfo;
@@ -49,6 +50,7 @@ export class GetCinemaCatalogUseCase {
 
         return {
             cinemaName: cinema.name,
+            ticketPrice: cinema.ticketPrice,
             sessions: sessionsWithFilmTitles,
         };
     }

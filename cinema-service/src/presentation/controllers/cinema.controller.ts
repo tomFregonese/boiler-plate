@@ -54,6 +54,7 @@ export class CinemaController {
             address: cinema.address,
             city: cinema.city,
             postalCode: cinema.postalCode,
+            ticketPrice: cinema.ticketPrice,
         }));
     }
 
@@ -72,6 +73,7 @@ export class CinemaController {
 
         return {
             cinemaName: result.cinemaName,
+            ticketPrice: result.ticketPrice,
             sessions: result.sessions.map((session) => ({
                 sessionId: session.sessionId,
                 film: session.film,

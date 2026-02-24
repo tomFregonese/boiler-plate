@@ -33,6 +33,9 @@ export class MovieSessionProviderDto {
         type: [MovieSessionItemDto],
     })
     sessions: MovieSessionItemDto[];
+
+    @ApiProperty({ description: 'Ticket price in euros', example: 12.5 })
+    ticketPrice: number;
 }
 
 export class MovieSessionsDto {
