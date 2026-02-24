@@ -1,0 +1,61 @@
+@startuml class-cinema
+
+enum OccupationStatus {
+  FREE
+  OCCUPIED
+}
+
+class Cinema {
+  +id: string
+  +name: string
+  +address: string
+  +city: string
+  +postalCode: string
+  +rooms: string[]
+}
+
+class Room {
+  +id: string
+  +name: string
+  +cinemaId: string
+  +seats: string[]
+}
+
+class Seat {
+  +id: string
+  +row: string
+  +number: number
+  +roomId: string
+}
+
+class Session {
+  +id: string
+  +filmId: string
+  +roomId: string
+  +cinemaId: string
+  +startTime: Date
+  +endTime: Date
+  +seatOccupations: SeatOccupation[]
+  +roomName?: string
+  +isValidTimeSlot(): boolean
+  +bookSeats(seatIds: string[], userId: string): void
+}
+
+class SeatOccupation {
+  +sessionId: string
+  +seatId: string
+  +status: OccupationStatus
+  +userId?: string
+  +isFree(): boolean
+}
+
+note "filmId: logical reference to Movies service\n(no local entity — OMDB imdbID)" as FilmNote
+Session .. FilmNote
+
+' rooms[] and seats[] hold IDs only (no embedded objects in domain entity)
+Cinema "1" --> "0..*" Room : rooms[ ] (IDs)
+Room "1" --> "0..*" Seat : seats[ ] (IDs)
+Session "1" *-- "0..*" SeatOccupation
+SeatOccupation --> OccupationStatus
+
+@enduml

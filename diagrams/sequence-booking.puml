@@ -1,0 +1,44 @@
+@startuml sequence-booking
+
+participant Client
+participant "API Gateway" as GW
+participant "Cinemas Service" as Cinemas
+participant "Movies Service" as Movies
+participant "Bookings Service" as Bookings
+
+== UC3 step 2 — Browse sessions by film (public) ==
+
+Client -> GW : GET /movies/:filmId/sessions
+note right of GW : Public — forward with X-Internal-Api-Key only
+GW -> Cinemas : GET /movies/:filmId/sessions\n(X-Internal-Api-Key)
+Cinemas -> Movies : GET /movie/id/:filmId\n(X-Internal-Api-Key)
+Movies --> Cinemas : 200 film details\n{ title, director, durationMinutes,\n  releaseYear, posterUrl, synopsis }
+Cinemas --> GW : 200\n{ film, providers: [{ cinemaId, cinemaName,\n  sessions: [{ sessionId, startTime }] }] }
+GW --> Client : 200 sessions by cinema
+
+== UC3 step 3 — View seat map (public) ==
+
+Client -> GW : GET /sessions/:id/seats
+GW -> Cinemas : GET /sessions/:id/seats\n(X-Internal-Api-Key)
+Cinemas --> GW : 200\n{ sessionId, film,\n  rows: [{ rowName,\n    seats: [{ seatId, columnNumber,\n      status: FREE|OCCUPIED }] }] }
+GW --> Client : 200 seat map
+
+== UC3 steps 5–6 — Book seats (protected) ==
+
+Client -> GW : POST /sessions/:id/book\n{ seatIds: ["s1", "s2"] }\nAuthorization: Bearer {JWT}
+GW -> GW : validate JWT (local)\nextract uid, roles[]
+GW -> Cinemas : POST /sessions/:id/book\n{ seatIds }\nX-User-Id: {uid}\nX-User-Role: {role}\nX-Internal-Api-Key: {secret}
+Cinemas -> Cinemas : atomic seat occupation\nmark seats OCCUPIED for userId
+Cinemas --> GW : 204 No Content
+GW --> Client : 204 No Content
+
+== UC3 step 6 — Create booking record (protected) ==
+
+Client -> GW : POST /bookings\n{ sessionId, seatIds,\n  payment: { provider, amount, currency } }\nAuthorization: Bearer {JWT}
+GW -> GW : validate JWT (local)\nextract uid, roles[]
+GW -> Bookings : POST /bookings\n{ sessionId, seatIds, payment }\nX-User-Id: {uid}\nX-User-Role: {role}\nX-Internal-Api-Key: {secret}
+Bookings -> Bookings : create Booking (PENDING)\ncreate BookingSeats\ncreate Payment (PENDING)
+Bookings --> GW : 201\n{ id, userId, sessionId, status: PENDING,\n  seats, payment }
+GW --> Client : 201 booking created
+
+@enduml

@@ -1,0 +1,40 @@
+@startuml components
+
+actor Client
+
+component "API Gateway\n:3000" as GW
+
+component "Auth Service\n:3001" as Auth
+database "auth_db\n(PostgreSQL)" as AuthDB
+
+component "Movies Service\n:3002" as Movies
+database "movies_db\n(PostgreSQL)" as MoviesDB
+
+component "Cinemas Service\n:3003" as Cinemas
+database "cinemas_db\n(PostgreSQL)" as CinemasDB
+
+component "Bookings Service\n:3004" as Bookings
+database "bookings_db\n(PostgreSQL)" as BookingsDB
+
+cloud "OMDB API\n(external)" as OMDB
+
+' Client → Gateway (unique entry point)
+Client --> GW : REST/HTTP
+
+' Gateway → Services
+GW --> Auth : REST/HTTP\nX-Internal-Api-Key
+GW --> Movies : REST/HTTP\nX-Internal-Api-Key
+GW --> Cinemas : REST/HTTP\nX-Internal-Api-Key\n[X-User-Id, X-User-Role]
+GW --> Bookings : REST/HTTP\nX-Internal-Api-Key\n[X-User-Id, X-User-Role]
+
+' Databases (one per service)
+Auth --> AuthDB
+Movies --> MoviesDB
+Cinemas --> CinemasDB
+Bookings --> BookingsDB
+
+' Internal inter-service calls
+Cinemas --> Movies : REST/HTTP\nX-Internal-Api-Key\n(film enrichment)
+Movies --> OMDB : HTTPS\n(API key)
+
+@enduml

@@ -1,0 +1,64 @@
+@startuml class-bookings
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+class Money <<ValueObject>> {
+  +amount: number
+  +currency: string
+}
+
+class Booking {
+  +id?: string
+  +userId: string
+  +screeningId: string
+  +status: BookingStatus
+  +seats: BookingSeat[]
+  +createdAt?: Date
+  +updatedAt?: Date
+  +payment?: Payment
+  +confirm(): void
+  +cancel(): void
+}
+
+class BookingSeat {
+  +id?: string
+  +bookingId?: string
+  +screeningId: string
+  +seatId: string
+}
+
+class Payment {
+  +id?: string
+  +bookingId?: string
+  +provider: string
+  +amount: Money
+  +status: PaymentStatus
+  +createdAt?: Date
+  +updatedAt?: Date
+  +complete(): void
+  +fail(): void
+}
+
+note "userId: logical reference to Auth service User\n(no local entity)" as UserNote
+Booking .. UserNote
+
+note "screeningId: logical reference to Cinema service Session\nseatId: logical reference to Cinema service Seat\n(no local entities)" as CinemaNote
+BookingSeat .. CinemaNote
+
+Booking "1" *-- "1..*" BookingSeat
+Booking "1" *-- "0..1" Payment
+Payment "1" *-- "1" Money
+Booking --> BookingStatus
+Payment --> PaymentStatus
+
+@enduml

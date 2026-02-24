@@ -1,0 +1,25 @@
+@startuml class-auth
+
+class User {
+  +id: string
+  +login: string
+  +password: string
+  +roles: string[]
+  +status: string
+  +createdAt: Date
+  +updatedAt: Date
+  +withoutPassword(): Omit<User, "password">
+}
+
+class RefreshToken {
+  +id: string
+  +token: string
+  +userId: string
+  +expiresAt: Date
+  +createdAt: Date
+  +isExpired(): boolean
+}
+
+User "1" *-- "0..*" RefreshToken : owns
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml activity-uc3
+
+title UC3 — Reservation by film (client perspective)
+
+start
+
+:Browse films catalog\n(search by title, genre, release date);
+:Select a film;
+:View sessions list by cinema\nGET /movies/:filmId/sessions;
+:Select a cinema and a session;
+:View seat map\nGET /sessions/:id/seats;
+
+if (Already logged in?) then (no)
+  if (Has an account?) then (no)
+    :Fill in registration form;
+    :Create account\nPOST /api/account;
+  endif
+  :Log in\nPOST /api/token;
+  :Receive JWT access token\n+ refresh token;
+endif
+
+:Select seat(s) on the seat map;
+
+:Confirm reservation;
+
+:Book seats (atomic)\nPOST /sessions/:id/book;
+
+:Create booking record\nPOST /bookings;
+
+:Reservation confirmed\n(status: PENDING → CONFIRMED);
+
+stop
+
+@enduml

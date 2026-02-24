@@ -1,0 +1,59 @@
+@startuml class-films
+
+note as NoDBNote
+  No persistent storage.
+  This service proxies the OMDB external API.
+  Domain layer contains TypeScript interfaces only —
+  no classes, no database, no Prisma schema.
+end note
+
+interface OmdbRating {
+  +Source: string
+  +Value: string
+}
+
+interface OmdbSearchItem {
+  +Title: string
+  +Year: string
+  +imdbID: string
+  +Type: string
+  +Poster: string
+}
+
+interface OmdbMovie {
+  +Title: string
+  +Year: string
+  +Rated: string
+  +Released: string
+  +Runtime: string
+  +Genre: string
+  +Director: string
+  +Writer: string
+  +Actors: string
+  +Plot: string
+  +Language: string
+  +Country: string
+  +Awards: string
+  +Poster: string
+  +Ratings: OmdbRating[]
+  +Metascore: string
+  +imdbRating: string
+  +imdbVotes: string
+  +imdbID: string
+  +Type: string
+  +Response: "True" | "False"
+  +Error?: string
+}
+
+interface MovieSearchResult {
+  +page: number
+  +totalResults: number
+  +results: OmdbSearchItem[] | OmdbMovie[]
+  +filtersApplied?: string[]
+}
+
+OmdbMovie "1" --> "0..*" OmdbRating : ratings
+MovieSearchResult --> OmdbSearchItem : results (summary)
+MovieSearchResult --> OmdbMovie : results (detailed)
+
+@enduml

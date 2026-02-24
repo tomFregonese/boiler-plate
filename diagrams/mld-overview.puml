@@ -1,0 +1,168 @@
+@startuml mld-overview
+
+' ─────────────────────────────────────────
+' Auth Service DB
+' ─────────────────────────────────────────
+package "Auth Service DB" as AuthDB {
+  entity "users" as users {
+    * id : UUID <<PK>>
+    --
+    * login : VARCHAR <<UNIQUE>>
+    * password : VARCHAR
+    * roles : TEXT[]
+    * status : VARCHAR
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+  }
+
+  entity "refresh_tokens" as refresh_tokens {
+    * id : UUID <<PK>>
+    --
+    * token : VARCHAR <<UNIQUE>>
+    * userId : UUID <<FK>>
+    * expiresAt : TIMESTAMPTZ
+    * createdAt : TIMESTAMPTZ
+  }
+
+  users ||--o{ refresh_tokens : "userId → id"
+}
+
+' ─────────────────────────────────────────
+' Cinema Service DB
+' ─────────────────────────────────────────
+package "Cinema Service DB" as CinemaDB {
+  entity "cinemas" as cinemas {
+    * id : UUID <<PK>>
+    --
+    * name : VARCHAR
+    * address : VARCHAR
+    * city : VARCHAR
+    * postalCode : VARCHAR
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+  }
+
+  entity "rooms" as rooms {
+    * id : UUID <<PK>>
+    --
+    * name : VARCHAR
+    * cinemaId : UUID <<FK>>
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+  }
+
+  entity "seats" as seats {
+    * id : UUID <<PK>>
+    --
+    * row : VARCHAR
+    * number : INT
+    * roomId : UUID <<FK>>
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+    ..
+    UNIQUE(roomId, row, number)
+  }
+
+  entity "sessions" as sessions {
+    * id : UUID <<PK>>
+    --
+    * filmId : VARCHAR
+    * roomId : UUID <<FK>>
+    * startTime : TIMESTAMPTZ
+    * endTime : TIMESTAMPTZ
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+  }
+
+  entity "seat_occupations" as seat_occupations {
+    * sessionId : UUID <<PK, FK>>
+    * seatId : UUID <<PK, FK>>
+    --
+    userId : UUID
+    * status : OccupationStatus (FREE|OCCUPIED)
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+    ..
+    INDEX(sessionId)
+  }
+
+  cinemas ||--o{ rooms : "cinemaId → id\n(CASCADE)"
+  rooms ||--o{ seats : "roomId → id\n(CASCADE)"
+  rooms ||--o{ sessions : "roomId → id\n(CASCADE)"
+  sessions ||--o{ seat_occupations : "sessionId → id\n(CASCADE)"
+  seats ||--o{ seat_occupations : "seatId → id\n(CASCADE)"
+}
+
+' ─────────────────────────────────────────
+' Movies Service — No DB
+' ─────────────────────────────────────────
+package "Movies Service" as MoviesDB {
+  note as MoviesNote
+    No database.
+    Proxies OMDB external API.
+    Films are identified by their
+    OMDB imdbID (VARCHAR) across services.
+  end note
+}
+
+' ─────────────────────────────────────────
+' Bookings Service DB
+' ─────────────────────────────────────────
+package "Bookings Service DB" as BookingsDB {
+  entity "Booking" as Booking {
+    * id : UUID <<PK>>
+    --
+    * userId : UUID
+    * screeningId : UUID
+    * status : BookingStatus (PENDING|CONFIRMED|CANCELLED)
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+    ..
+    INDEX(userId)
+    INDEX(screeningId)
+  }
+
+  entity "BookingSeat" as BookingSeat {
+    * id : CUID <<PK>>
+    --
+    * bookingId : UUID <<FK>>
+    * screeningId : UUID
+    * seatId : UUID
+    ..
+    UNIQUE(screeningId, seatId)
+    INDEX(bookingId)
+    INDEX(seatId)
+  }
+
+  entity "Payment" as Payment {
+    * id : UUID <<PK>>
+    --
+    * bookingId : UUID <<FK, UNIQUE>>
+    * provider : VARCHAR
+    * amount : INT
+    * currency : VARCHAR
+    * status : PaymentStatus (PENDING|COMPLETED|FAILED)
+    * createdAt : TIMESTAMPTZ
+    * updatedAt : TIMESTAMPTZ
+  }
+
+  Booking ||--o{ BookingSeat : "bookingId → id\n(CASCADE)"
+  Booking ||--o| Payment : "bookingId → id\n(CASCADE)"
+}
+
+' ─────────────────────────────────────────
+' Cross-service logical references (no FK)
+' ─────────────────────────────────────────
+sessions::filmId ..> MoviesDB : "logical reference (no FK)\n[OMDB imdbID]"
+
+seat_occupations::userId ..> users : "logical reference (no FK)\n[Auth user id]"
+
+Booking::userId ..> users : "logical reference (no FK)\n[Auth user id]"
+
+Booking::screeningId ..> sessions : "logical reference (no FK)\n[Cinema session id]"
+
+BookingSeat::screeningId ..> sessions : "logical reference (no FK)\n[Cinema session id]"
+
+BookingSeat::seatId ..> seats : "logical reference (no FK)\n[Cinema seat id]"
+
+@enduml

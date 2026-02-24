@@ -1,0 +1,92 @@
+@startuml use-case
+left to right direction
+
+actor Visitor as V
+actor Client as C
+actor Manager as M
+
+V <|-- C
+V <|-- M
+
+rectangle "Cinema Booking Platform" {
+
+  package "Account" {
+    usecase "Create account (UC1)" as UC1
+    usecase "Login" as Login
+    usecase "Refresh access token" as Refresh
+    usecase "View own account" as ViewAccount
+    usecase "Update own account" as UpdateAccount
+  }
+
+  package "Film Catalog" {
+    usecase "Search films" as SearchFilms
+    usecase "View film details" as FilmDetails
+  }
+
+  package "Cinema Catalog" {
+    usecase "Browse cinemas" as BrowseCinemas
+    usecase "View cinema programming" as CinemaCatalog
+    usecase "View sessions by film" as FilmSessions
+    usecase "View seat map" as SeatMap
+  }
+
+  package "Reservation" {
+    usecase "Book by film (UC3)" as UC3
+    usecase "Book by cinema (UC4)" as UC4
+    usecase "Select seats" as SelectSeats
+    usecase "View booking" as ViewBooking
+    usecase "Confirm booking" as ConfirmBooking
+    usecase "Cancel booking" as CancelBooking
+  }
+
+  package "Administration" {
+    usecase "Schedule session (UC2)" as UC2
+    usecase "Check room availability" as RoomAvail
+    usecase "Create session" as CreateSession
+    usecase "Manage all accounts" as ManageAccounts
+  }
+}
+
+' Visitor
+V --> UC1
+V --> Login
+V --> Refresh
+V --> SearchFilms
+V --> FilmDetails
+V --> BrowseCinemas
+V --> FilmSessions
+V --> CinemaCatalog
+V --> SeatMap
+
+' Client
+C --> UC3
+C --> UC4
+C --> ViewBooking
+C --> ConfirmBooking
+C --> CancelBooking
+C --> ViewAccount
+C --> UpdateAccount
+
+' Manager
+M --> UC2
+M --> ManageAccounts
+M --> ViewAccount
+M --> UpdateAccount
+
+' UC3 relationships
+UC3 ..> FilmSessions : <<include>>
+UC3 ..> SeatMap : <<include>>
+UC3 ..> SelectSeats : <<include>>
+Login ..> UC3 : <<extend>>
+
+' UC4 relationships
+UC4 ..> CinemaCatalog : <<include>>
+UC4 ..> SeatMap : <<include>>
+UC4 ..> SelectSeats : <<include>>
+Login ..> UC4 : <<extend>>
+
+' UC2 relationships
+UC2 ..> RoomAvail : <<include>>
+UC2 ..> CreateSession : <<include>>
+
+@enduml

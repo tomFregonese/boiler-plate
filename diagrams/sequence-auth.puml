@@ -1,0 +1,34 @@
+@startuml sequence-auth
+
+participant Client
+participant "API Gateway" as GW
+participant "Auth Service" as Auth
+participant "Cinemas Service" as Cinemas
+
+== Login — POST /api/token ==
+
+Client -> GW : POST /api/token\n{ login, password }
+note right of GW : Public endpoint — no JWT check
+GW -> Auth : POST /token\n(X-Internal-Api-Key)
+Auth -> Auth : validate credentials\nhash password check
+Auth -> Auth : generate JWT (60 min)\n+ refresh token (UUID, 120 min)
+Auth --> GW : 200\n{ accessToken, accessTokenExpiresAt,\n  refreshToken, refreshTokenExpiresAt }
+GW --> Client : 200 token pair
+
+== Protected request — JWT valid ==
+
+Client -> GW : POST /sessions/:id/book\n{ seatIds: [...] }\nAuthorization: Bearer {JWT}
+GW -> GW : extract Bearer token
+GW -> GW : verify signature (HS256, JWT_SECRET)\ncheck exp > now\nextract uid, login, roles[]
+GW -> Cinemas : POST /sessions/:id/book\n{ seatIds }\nX-User-Id: {uid}\nX-User-Role: {role}\nX-Internal-Api-Key: {secret}
+Cinemas -> Cinemas : validate X-Internal-Api-Key\ncheck X-User-Role\nmark seats OCCUPIED (atomic)
+Cinemas --> GW : 204 No Content
+GW --> Client : 204 No Content
+
+== Protected request — JWT invalid / expired ==
+
+Client -> GW : POST /sessions/:id/book\nAuthorization: Bearer {invalid or expired JWT}
+GW -> GW : verify JWT → FAIL\n(bad signature or exp <= now)
+GW --> Client : 401 Unauthorized\n{ statusCode: 401,\n  message: "Invalid or expired token" }
+
+@enduml
