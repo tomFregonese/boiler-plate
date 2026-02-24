@@ -24,17 +24,16 @@ class CreatePaymentDto {
 }
 
 export class CreateBookingDto {
-  @ApiProperty({ example: 'user_123', description: 'Identifiant utilisateur' })
+  @ApiProperty({
+    example: '880e8400-e29b-41d4-a716-446655440000',
+    description: 'Identifiant de la session (UUID du cinema-service)',
+  })
   @IsString()
-  userId!: string
-
-  @ApiProperty({ example: 'screening_abc', description: 'Identifiant de séance' })
-  @IsString()
-  screeningId!: string
+  sessionId!: string
 
   @ApiProperty({
-    example: ['seat_A1', 'seat_A2'],
-    description: 'Liste des identifiants de sièges',
+    example: ['880e8400-e29b-41d4-a716-446655440010', '880e8400-e29b-41d4-a716-446655440011'],
+    description: 'Liste des identifiants de sièges (UUIDs du cinema-service)',
   })
   @IsArray()
   @ArrayNotEmpty()
@@ -43,6 +42,7 @@ export class CreateBookingDto {
 
   @ApiPropertyOptional({
     description: 'Paiement optionnel à la création du booking',
+    type: CreatePaymentDto,
   })
   @IsOptional()
   @ValidateNested()

@@ -67,4 +67,18 @@ export class Session {
             return occupation;
         });
     }
+
+    releaseSeats(seatIds: string[]): void {
+        this._seatOccupations = this._seatOccupations.map((occupation) => {
+            if (seatIds.includes(occupation.seatId)) {
+                return new SeatOccupation(
+                    occupation.sessionId,
+                    occupation.seatId,
+                    OccupationStatus.FREE,
+                    undefined,
+                );
+            }
+            return occupation;
+        });
+    }
 }
