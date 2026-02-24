@@ -33,6 +33,7 @@ export class CinemasController {
   @ApiOperation({
     summary: 'Get the complete catalog (schedule) of a cinema',
   })
+  @ApiParam({ name: 'id', description: 'Unique identifier of the cinema' })
   @ApiResponse({
     status: 200,
     description: 'Cinema catalog retrieved successfully',
@@ -47,6 +48,7 @@ export class CinemasController {
   }
 
   @Get(':id/rooms')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get rooms for a specific cinema' })
   @ApiParam({ name: 'id', description: 'Unique identifier of the cinema' })
   @ApiResponse({
@@ -101,11 +103,6 @@ export class CinemasController {
   @Post('sessions/:id/book')
   @ApiOperation({ summary: 'Book seats for a session' })
   @ApiParam({ name: 'id', description: 'Unique identifier of the session' })
-  @ApiHeader({
-    name: 'x-user-id',
-    description: 'User identifier injected by the gateway',
-    required: true,
-  })
   @ApiResponse({ status: 200, description: 'Seats booked successfully' })
   @ApiResponse({
     status: 400,
@@ -134,11 +131,6 @@ export class CinemasController {
     description: 'Date to check availability (YYYY-MM-DD format)',
     example: '2025-01-26',
   })
-  @ApiHeader({
-    name: 'x-user-role',
-    description: 'User role injected by the gateway',
-    required: true,
-  })
   @ApiResponse({
     status: 200,
     description: 'Room availability retrieved successfully',
@@ -160,11 +152,6 @@ export class CinemasController {
   @Post('admin/sessions')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new session for a film in a room' })
-  @ApiHeader({
-    name: 'x-user-role',
-    description: 'User role injected by the gateway',
-    required: true,
-  })
   @ApiResponse({ status: 201, description: 'Session created successfully' })
   @ApiResponse({
     status: 400,

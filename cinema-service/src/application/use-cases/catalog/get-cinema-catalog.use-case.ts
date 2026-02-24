@@ -39,7 +39,7 @@ export class GetCinemaCatalogUseCase {
 
         const sessions = await this.sessionRepository.findByCinemaId(cinemaId);
 
-        const sessionsWithFilmTitles = await Promise.all(
+        const sessionResults = await Promise.allSettled(
             sessions.map(async (session) => ({
                 sessionId: session.id,
                 film: await this.filmService.getFilmById(session.filmId),
@@ -48,10 +48,14 @@ export class GetCinemaCatalogUseCase {
             })),
         );
 
+        const sessionsWithFilm = sessionResults
+            .filter((result) => result.status === 'fulfilled')
+            .map((result) => result.value);
+
         return {
             cinemaName: cinema.name,
             ticketPrice: cinema.ticketPrice,
-            sessions: sessionsWithFilmTitles,
+            sessions: sessionsWithFilm,
         };
     }
 }
