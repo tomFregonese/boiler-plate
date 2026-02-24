@@ -71,10 +71,37 @@ export class CreateBookingUseCase {
         )
       : undefined
 
-    const createdBooking = await this.bookingRepository.create(booking, payment);
-    
-    this.logger.log(`Successfully created booking ${createdBooking.id}`);
-    
-    return createdBooking;
+    try {
+      const createdBooking = await this.bookingRepository.create(booking, payment);
+
+      this.logger.log(`Successfully created booking ${createdBooking.id}`);
+
+      return createdBooking;
+    } catch (error) {
+      this.logger.error(
+        `Failed to create booking in database for screening ${input.screeningId}. Attempting to release seats in cinema service. Error: ${
+          error instanceof Error ? error.message : error
+        }`,
+      );
+
+      try {
+        await this.cinemaServiceClient.releaseSeats(
+          input.screeningId,
+          seatIds,
+          input.userId,
+        );
+        this.logger.log(
+          `Successfully released seats in cinema service for failed booking on screening ${input.screeningId}`,
+        );
+      } catch (releaseError) {
+        this.logger.error(
+          `Failed to release seats in cinema service after booking creation failure for screening ${input.screeningId}: ${
+            releaseError instanceof Error ? releaseError.message : releaseError
+          }`,
+        );
+      }
+
+      throw error;
+    }
   }
 }
