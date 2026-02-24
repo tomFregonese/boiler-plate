@@ -9,7 +9,7 @@ import {
     SEAT_REPOSITORY,
     SESSION_REPOSITORY,
 } from '../../../infrastructure/token';
-import {ICinemaRepository} from "../../../domain/repositories/cinema.repository";
+import { ICinemaRepository } from '../../../domain/repositories/cinema.repository';
 
 export interface SessionSeatMapResult {
     sessionId: string;
