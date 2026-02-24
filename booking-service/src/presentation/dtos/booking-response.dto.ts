@@ -10,7 +10,7 @@ class BookingSeatResponseDto {
   @ApiProperty({ example: 'sess_abc123', description: 'Identifiant de la session' })
   sessionId!: string
 
-  @ApiProperty({ example: 'seat_A1', description: 'Identifiant du siège' })
+  @ApiProperty({ example: '880e8400-e29b-41d4-a716-446655440010', description: 'Identifiant du siège' })
   seatId!: string
 }
 
