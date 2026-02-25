@@ -16,6 +16,8 @@ System_Boundary(cinema_system, "Cinema App") {
   Container(cinema_service, "Cinema Service", "API", "Cinemas, salles et seances.")
 }
 
+System_Ext(omdb_api, "OMDb API", "Catalogue de films externe")
+
 Rel(admin, frontend, "Utilise")
 Rel(customer, frontend, "Utilise")
 
@@ -27,5 +29,6 @@ Rel(api_gateway, cinema_service, "HTTP/JSON")
 
 Rel(booking_service, cinema_service, "HTTP/JSON")
 Rel(cinema_service, movies_service, "HTTP/JSON")
+Rel(movies_service, omdb_api, "HTTP/JSON")
 
 @enduml

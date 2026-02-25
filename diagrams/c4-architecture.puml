@@ -1,0 +1,36 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_LEFT_RIGHT()
+
+System_Boundary(cinema_system, "Cinema App") {
+  Container(web, "Tchicket-Front", "Web (Angular)", "Interface web client et admin")
+  Container(api_gateway, "API Gateway", "API", "Point d'entree unique")
+
+  Container(auth_service, "Auth Service", "NestJS API", "Authentification et comptes")
+  Container(booking_service, "Booking Service", "NestJS API", "Reservations et paiements")
+  Container(cinema_service, "Cinema Service", "NestJS API", "Cinemas, salles, seances, sieges")
+  Container(movie_service, "Movie Service", "NestJS API", "Recherche et details de films (OMDb)")
+
+  ContainerDb(auth_db, "Auth DB", "PostgreSQL", "Utilisateurs et comptes")
+  ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Reservations, sieges, paiements")
+  ContainerDb(cinema_db, "Cinema DB", "PostgreSQL", "Cinemas, salles, seances, occupations")
+}
+
+System_Ext(omdb, "OMDb API", "Catalogue de films externe")
+Rel(web, api_gateway, "HTTP/JSON")
+
+Rel(api_gateway, auth_service, "HTTP/JSON")
+Rel(api_gateway, booking_service, "HTTP/JSON")
+Rel(api_gateway, cinema_service, "HTTP/JSON")
+Rel(api_gateway, movie_service, "HTTP/JSON")
+
+Rel(auth_service, auth_db, "SQL")
+Rel(booking_service, booking_db, "SQL")
+Rel(cinema_service, cinema_db, "SQL")
+
+Rel(booking_service, cinema_service, "HTTP/JSON", "Reserver / liberer sieges")
+Rel(cinema_service, movie_service, "HTTP/JSON", "Infos film")
+Rel(movie_service, omdb, "HTTP/JSON", "Recherche / details films")
+
+@enduml
