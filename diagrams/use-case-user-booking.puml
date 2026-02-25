@@ -1,0 +1,26 @@
+@startuml use-case-user-booking
+left to right direction
+
+actor "Client" as Client
+
+rectangle "Service Cinéma" {
+  usecase "Consulter séances d'un film" as UC_FilmSessions
+  usecase "Voir plan de salle" as UC_SeatMap
+  usecase "Réserver des places" as UC_BookSeats
+
+  rectangle "Validations internes" {
+    usecase "Vérifier existence session" as UC_SessionExists
+    usecase "Vérifier existence sièges" as UC_SeatsExist
+    usecase "Vérifier sièges libres" as UC_SeatsFree
+  }
+}
+
+Client --> UC_FilmSessions
+Client --> UC_SeatMap
+Client --> UC_BookSeats
+
+UC_BookSeats ..> UC_SessionExists : <<include>>
+UC_BookSeats ..> UC_SeatsExist : <<include>>
+UC_BookSeats ..> UC_SeatsFree : <<include>>
+
+@enduml

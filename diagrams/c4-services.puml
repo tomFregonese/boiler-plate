@@ -1,0 +1,31 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title C4 - Services (Tchicket-Front)
+
+Person(admin, "Admin", "Gere les cinemas et seances. Cherche les films via le service Films.")
+Person(customer, "Client", "Consulte les films et reserve des seances.")
+
+System_Boundary(cinema_system, "Cinema App") {
+  Container(frontend, "Tchicket-Front", "Angular", "Interface web client et admin.")
+
+  Container(api_gateway, "API Gateway", "API", "Point d'entree unique pour les services.")
+  Container(auth_service, "Auth Service", "API", "Authentification et gestion des comptes.")
+  Container(booking_service, "Booking Service", "API", "Reservations et paiements.")
+  Container(movies_service, "Movies Service", "API", "Catalogue de films.")
+  Container(cinema_service, "Cinema Service", "API", "Cinemas, salles et seances.")
+}
+
+Rel(admin, frontend, "Utilise")
+Rel(customer, frontend, "Utilise")
+
+Rel(frontend, api_gateway, "HTTP/JSON")
+Rel(api_gateway, auth_service, "HTTP/JSON")
+Rel(api_gateway, booking_service, "HTTP/JSON")
+Rel(api_gateway, movies_service, "HTTP/JSON")
+Rel(api_gateway, cinema_service, "HTTP/JSON")
+
+Rel(booking_service, cinema_service, "HTTP/JSON")
+Rel(cinema_service, movies_service, "HTTP/JSON")
+
+@enduml

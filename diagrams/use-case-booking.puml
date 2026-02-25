@@ -1,0 +1,39 @@
+@startuml use-case-booking
+left to right direction
+
+actor "Client" as Client
+actor "Service Cinéma" as Cinema
+
+rectangle "Service Booking" {
+  usecase "Créer une réservation" as UC_Create
+  usecase "Confirmer une réservation" as UC_Confirm
+  usecase "Annuler une réservation" as UC_Cancel
+  usecase "Consulter une réservation" as UC_Get
+
+  rectangle "Validations internes" {
+    usecase "Vérifier x-user-id" as UC_UserHeader
+    usecase "Vérifier disponibilité sièges" as UC_SeatsAvailable
+    usecase "Créer paiement (optionnel)" as UC_Payment
+    usecase "Libérer sièges si échec" as UC_ReleaseOnFail
+    usecase "Vérifier réservation existe" as UC_BookingExists
+  }
+}
+
+Client --> UC_Create
+Client --> UC_Confirm
+Client --> UC_Cancel
+Client --> UC_Get
+
+Cinema --> UC_SeatsAvailable
+Cinema --> UC_ReleaseOnFail
+
+UC_Create ..> UC_UserHeader : <<include>>
+UC_Create ..> UC_SeatsAvailable : <<include>>
+UC_Create ..> UC_Payment : <<include>>
+UC_Create ..> UC_ReleaseOnFail : <<include>>
+
+UC_Confirm ..> UC_BookingExists : <<include>>
+UC_Cancel ..> UC_BookingExists : <<include>>
+UC_Get ..> UC_BookingExists : <<include>>
+
+@enduml

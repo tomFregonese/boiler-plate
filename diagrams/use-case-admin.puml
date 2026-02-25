@@ -1,0 +1,29 @@
+@startuml use-case-admin
+left to right direction
+
+actor "Administrateur" as Admin
+
+rectangle "Service Cinéma" {
+  usecase "Vérifier disponibilité d'une salle" as UC_Availability
+  usecase "Créer une séance" as UC_CreateSession
+
+  rectangle "Validations internes" {
+    usecase "Valider rôle admin" as UC_Auth
+    usecase "Vérifier existence salle" as UC_Room
+    usecase "Vérifier existence film" as UC_Film
+    usecase "Vérifier conflit de créneau" as UC_Conflict
+  }
+}
+
+Admin --> UC_Availability
+Admin --> UC_CreateSession
+
+UC_Availability ..> UC_Auth : <<include>>
+UC_Availability ..> UC_Room : <<include>>
+
+UC_CreateSession ..> UC_Auth : <<include>>
+UC_CreateSession ..> UC_Room : <<include>>
+UC_CreateSession ..> UC_Film : <<include>>
+UC_CreateSession ..> UC_Conflict : <<include>>
+
+@enduml
