@@ -86,6 +86,7 @@ async function main() {
                 address: cinemaData.address,
                 city: cinemaData.city,
                 postalCode: cinemaData.postalCode,
+                ticketPrice: cinemaData.ticketPrice,
             },
         });
 
